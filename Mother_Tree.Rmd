@@ -24,8 +24,8 @@ library(knitr) # tool for making nice tables
 library(tidyr) # data table wrangling tool
 library(broom)
 library(stargazer) # mekes pretty tables
-library(stats) # for PCA
-library(psych)
+library(stats) # for PCA & FA
+library(psych) # for PCA
 ```
 
 #### Input data
@@ -75,3 +75,21 @@ biplot(fit)
 # how do I account for demographic features?
 # next steps: Factor Analysis
 ```
+ 
+ ### Factor Analysis
+
+ # factanal(x, factors, data = NULL, covmat = NULL, n.obs = NA,
+ #        subset, na.action, start = NULL,
+ #        scores = c("none", "regression", "Bartlett"),
+ #        rotation = "varimax", control = NULL, ...)
+ 
+
+```{r}
+fit_mt <- factanal(~ ., factors = 5, data = mt_val)
+print(fit_mt, digits=2, cutoff=.3, sort=TRUE)
+# plot factor 1 by factor 2 
+load <- fit_mt$loadings[,1:2] 
+plot(load,type="n") # set up plot 
+text(load,labels=names(mt_val),cex=.7) # add variable names
+```
+

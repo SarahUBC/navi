@@ -46,8 +46,8 @@ library(stargazer) # mekes pretty tables
 ```
 
 ```r
-library(stats) # for PCA
-library(psych)
+library(stats) # for PCA & FA
+library(psych) # for PCA
 ```
 
 ```
@@ -464,3 +464,74 @@ biplot(fit)
 # how do I account for demographic features?
 # next steps: Factor Analysis
 ```
+ 
+ ### Factor Analysis
+
+ # factanal(x, factors, data = NULL, covmat = NULL, n.obs = NA,
+ #        subset, na.action, start = NULL,
+ #        scores = c("none", "regression", "Bartlett"),
+ #        rotation = "varimax", control = NULL, ...)
+ 
+
+
+```r
+fit_mt <- factanal(~ ., factors = 5, data = mt_val)
+print(fit_mt, digits=2, cutoff=.3, sort=TRUE)
+```
+
+```
+## 
+## Call:
+## factanal(x = ~., factors = 5, data = mt_val)
+## 
+## Uniquenesses:
+##     abuse_nep       bal_nep    crisis_nep spaceship_nep       bau_nep 
+##          0.28          0.36          0.35          0.63          0.31 
+##   extract_ins    loss_instr    decade_mor      comm_rel      wild_rel 
+##          0.83          0.67          0.40          0.66          0.53 
+##    clean_inst          tech      iden_rel       kin_rel         right 
+##          0.62          0.85          0.43          0.45          0.16 
+##    health_rel     other_rel       kin_met      resp_met 
+##          0.67          0.46          0.27          0.37 
+## 
+## Loadings:
+##               Factor1 Factor2 Factor3 Factor4 Factor5
+## wild_rel       0.61                                  
+## iden_rel       0.67                                  
+## kin_rel        0.67                                  
+## kin_met        0.84                                  
+## resp_met       0.73                                  
+## abuse_nep              0.73                          
+## crisis_nep            -0.63    0.35   -0.32          
+## spaceship_nep          0.53                          
+## bau_nep                0.73                          
+## bal_nep               -0.46    0.62                  
+## other_rel      0.31    0.35            0.56          
+## right                 -0.33    0.53           -0.59  
+## extract_ins                                          
+## loss_instr                     0.45                  
+## decade_mor                     0.48   -0.31   -0.36  
+## comm_rel       0.49                                  
+## clean_inst             0.38            0.35          
+## tech                           0.37                  
+## health_rel                             0.39          
+## 
+##                Factor1 Factor2 Factor3 Factor4 Factor5
+## SS loadings       3.41    2.78    1.63    1.19    0.68
+## Proportion Var    0.18    0.15    0.09    0.06    0.04
+## Cumulative Var    0.18    0.33    0.41    0.47    0.51
+## 
+## Test of the hypothesis that 5 factors are sufficient.
+## The chi square statistic is 149.33 on 86 degrees of freedom.
+## The p-value is 2.76e-05
+```
+
+```r
+# plot factor 1 by factor 2 
+load <- fit_mt$loadings[,1:2] 
+plot(load,type="n") # set up plot 
+text(load,labels=names(mt_val),cex=.7) # add variable names
+```
+
+![](Mother_Tree_files/figure-html/unnamed-chunk-6-1.png) 
+

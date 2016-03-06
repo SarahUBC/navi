@@ -1,0 +1,103 @@
+---
+title: "Env_val"
+author: "Sarah Klain"
+date: "March 6, 2016"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Setup
+
+```{r}
+library(Hmisc) #to run correlations with sig levels
+library(ggplot2) # for great charts
+library(ggthemes) # for pretty themes in ggplot
+library(viridis) # for pretty colors
+suppressMessages(library(dplyr))
+library(knitr) # tool for making nice tables
+library(tidyr) # data table wrangling tool
+library(broom)
+library(stargazer) # mekes pretty tables
+library(stats) # for PCA
+library(psych)
+```
+
+Input data
+```{r}
+setwd("/Users/sarahklain/Documents/R_2015/navi") #set working directory
+ev <- read.csv("Env_Val_02_29_2016.csv")
+```
+
+### Correlations
+
+```{r}
+#33 columns, use as matrix
+x <- ev[3:5]
+y <- ev[7:15]
+
+rcorr(as.matrix(ev[3:33]), type = "pearson")
+
+corr1 <- rcorr(as.matrix(ev[3:10]), type = "pearson")
+corr1
+```
+
+### PCA
+```{r}
+# apply PCA - scale. = TRUE is highly 
+# advisable, but default is FALSE. 
+# ir.pca <- prcomp(log.ir,
+#                 center = TRUE,
+#                scale. = TRUE) 
+
+ev.pca <- prcomp(as.matrix(ev[3:33]), na.action = na.omit, center = TRUE, scale = TRUE) 
+
+prcomp(na.omit(as.matrix(ev[3:33])), scale=TRUE)
+prcomp(na.omit(ev[3:33]), scale=TRUE) 
+
+ev.pca
+
+# Pricipal Components Analysis
+# entering raw data and extracting PCs 
+# from the correlation matrix 
+# fit <- princomp(mydata, cor=TRUE)
+# summary(fit) # print variance accounted for 
+# loadings(fit) # pc loadings 
+# plot(fit,type="lines") # scree plot 
+# fit$scores # the principal components
+# biplot(fit)
+
+
+fit <- princomp(na.omit(ev[3:33]), cor=TRUE)
+
+princomp(na.omit(ev), cor = TRUE)
+
+summary(fit) # print variance accounted for 
+loadings(fit) # pc loadings 
+plot(fit,type="lines") # scree plot 
+fit$scores # the principal components
+biplot(fit)
+```
+
+### Cronbach's alpha
+```{r}
+# Apply to NEP scores
+nep <- read.csv("nep.csv")
+alpha(nep)
+
+# Apply to M-Turk, all variables
+mt <- read.csv("env_val_MT.csv")
+alpha(mt)
+# alpha(met[3:7])
+
+mt_nep <- (mt[3:7]) # only NEP values
+# alpha(mt_nep)
+alpha(mt_nep, check.keys=TRUE)
+
+mt_val <- (mt[3:21]) # includes all value prompts
+alpha(mt_val, check.keys = TRUE)
+```

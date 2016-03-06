@@ -1,0 +1,285 @@
+---
+title: "Value_statements"
+author: "Sarah Klain"
+date: "October 21, 2015"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Setup
+
+```{r}
+library(Hmisc) #to run correlations with sig levels
+library(ggplot2) # for great charts
+library(ggthemes) # for pretty themes in ggplot
+library(viridis) # for pretty colors
+suppressMessages(library(dplyr))
+library(knitr) # tool for making nice tables
+library(tidyr) # data table wrangling tool
+library(broom)
+library(stargazer) # mekes pretty tables
+library(stats) # for PCA
+library(psych)
+```
+
+Input data
+```{r}
+setwd("/Users/sarahklain/Documents/R_2015/navi") #set working directory
+ev <- read.csv("Env_Val_02_29_2016.csv")
+```
+
+str(ev)
+head(ev)
+
+```{r}
+evl <- tidyr::gather(ev, "val_state", "response", 3:33) #short form to long form data for ease in analysis
+
+#bring into dplyr for ease in extracting one sub population
+evt <- evl %>%
+  tbl_df
+
+# str(evl)
+# head(evl)
+View(evt)
+```
+
+Add new column to group data by env value type
+
+```{r}
+ev_nep <- evtab %>% 
+  filter(val_state == "abuse_nep" | val_state == "bal_r_nep" | val_state == "crisis_r_nep" | val_state == "spaceship_nep" | val_state == "bau_nep") %>% 
+  mutate(v_type = "NEP")
+
+ev_inst <- evtab %>% 
+  filter(val_state == "extract_r_ins" | val_state == "clean_inst" | val_state == "loss_r_ins") %>% 
+  mutate(v_type = "inst")
+
+ev_rel <- evtab %>% 
+  filter(val_state == "comm_rel" | val_state == "iden_rel" | val_state == "kin_rel" | val_state == "wild_rel" | val_state == "health_rel2" | val_state == "other_rel" ) %>% 
+  mutate(v_type = "rel")
+
+ev_met <- evtab %>% 
+  filter(val_state == "kin_met" | val_state == "resp_met" | val_state == "iden_met" | val_state == "other_met") %>% 
+  mutate(v_type = "met")
+
+ev_mor <- evtab %>% 
+  filter(val_state == "decade_r_mor" | val_state == "right_r_mor") %>% 
+  mutate(v_type = "moral")
+
+# View(ev_met)
+eval_t2 <- bind_rows(ev_nep, ev_inst, ev_rel, ev_met, ev_mor)
+str(eval_t2)
+summary(eval_t2)
+```
+
+Violin plot, all value statements
+
+```{r}
+eval_t3 <- eval_t2 %>% 
+  filter(response > 0)
+
+val <- ggplot(eval_t3, aes(x= val_state, y = response, fill = v_type)) +
+  geom_violin() +
+  scale_fill_viridis(discrete=TRUE, option = "viridis") +
+  xlab("All Value Statements") + ylab("Mean Level of Agreement") +
+  ggtitle("Attitudes toward all value statements") +
+  theme_pander() +
+  facet_wrap(~ v_type, scales = "free_x")
+
+val
+
+#rel_v <- ggplot(rel, aes(x= val_state, y = response, fill = val_state)) +
+  geom_violin() +
+  scale_fill_viridis(discrete=TRUE, "") +
+  xlab("Relational Value Statements") + ylab("Mean Level of Agreement") +
+  ggtitle("Attitudes toward relational statements") +
+  theme_pander() +
+  facet_wrap(~ sub_pop)
+
+val
+
+ggsave(val, file="/Users/sarahklain/Documents/R_2015/env_val/figs/vio_all.pdf")
+
+val2 <- ggplot(eval_t3, aes(x= val_state, y = response, fill = v_type)) +
+  geom_violin() +
+  scale_fill_viridis(discrete=TRUE, option = "plasma") +
+  xlab("All Value Statements") + ylab("Mean Level of Agreement") +
+  ggtitle("Attitudes toward all value statements") +
+  theme_pander() +
+  facet_wrap(v_type ~ sub_pop, scales = "free_x")
+
+val2
+ggsave(val, file="/Users/sarahklain/Documents/R_2015/env_val/figs/vio_subpop.pdf")
+
+```
+
+Relational
+```{r}
+rel <- eval_t3 %>% 
+  filter(v_type == "rel")
+  
+rel_v <- ggplot(rel, aes(x= val_state, y = response, fill = val_state)) +
+  geom_violin() +
+  scale_fill_viridis(discrete=TRUE, "") +
+  xlab("Relational Value Statements") + ylab("Mean Level of Agreement") +
+  ggtitle("Attitudes toward relational statements") +
+  theme_pander() +
+  facet_wrap(~ sub_pop)
+
+rel_v
+
+ggsave(val, file="/Users/sarahklain/Documents/R_2015/env_val/figs/rel_v.pdf")
+```
+
+
+NEP
+Relational
+```{r}
+nep <- eval_t3 %>% 
+  filter(v_type == "NEP")
+  
+nep_v <- ggplot(nep, aes(x= val_state, y = response, fill = val_state)) +
+  geom_violin() +
+  scale_fill_viridis(discrete=TRUE,option = "inferno") +
+  xlab("NEP Statements") + ylab("Mean Level of Agreement") +
+  ggtitle("Attitudes toward NEP statements") +
+  theme_pander() +
+  facet_wrap(~ sub_pop)
+
+nep_v
+
+ggsave(nep_v, file="/Users/sarahklain/Documents/R_2015/env_val/figs/nep_v.pdf")
+```
+
+
+Metaphors
+
+```{r}
+met <- eval_t3 %>% 
+  filter(v_type == "met")
+  
+met_v <- ggplot(met, aes(x= val_state, y = response, fill = val_state)) +
+  geom_violin() +
+  scale_fill_viridis(discrete=TRUE, option = "plasma") +
+  xlab("Metaphors") + ylab("Mean Level of Agreement") +
+  ggtitle("Attitudes toward Metaphors") +
+  theme_pander() +
+  facet_wrap(~ sub_pop)
+
+met_v
+
+ggsave(met_v, file="/Users/sarahklain/Documents/R_2015/env_val/figs/met_v.pdf")
+```
+
+Instrumental
+```{r}
+inst <- eval_t3 %>% 
+  filter(v_type == "inst")
+  
+inst_v <- ggplot(inst, aes(x= val_state, y = response, fill = val_state)) +
+  geom_violin() +
+  scale_fill_viridis(discrete=TRUE, option = "magma") +
+  xlab("Instrumental Value Statements") + ylab("Mean Level of Agreement") +
+  ggtitle("Attitudes toward Instrumental Value Statements") +
+  theme_pander() +
+  facet_wrap(~ sub_pop)
+
+inst_v
+
+ggsave(inst_v, file="/Users/sarahklain/Documents/R_2015/env_val/figs/inst_v.pdf")
+```
+
+Moral
+
+```{r}
+mor <- eval_t3 %>% 
+  filter(v_type == "moral")
+  
+mor_v <- ggplot(mor, aes(x= val_state, y = response, fill = val_state)) +
+  geom_violin() +
+  scale_fill_viridis(discrete=TRUE, option = "viridis") +
+  xlab("Moral Value Statements") + ylab("Mean Level of Agreement") +
+  ggtitle("Attitudes toward Moral Value Statements") +
+  theme_pander() +
+  facet_wrap(~ sub_pop)
+
+mor_v
+
+ggsave(inst_v, file="/Users/sarahklain/Documents/R_2015/env_val/figs/mor_v.pdf")
+```
+
+### Correlations
+
+```{r}
+#33 columns, use as matrix
+x <- ev[3:5]
+y <- ev[7:15]
+
+rcorr(as.matrix(ev[3:33]), type = "pearson")
+
+corr1 <- rcorr(as.matrix(ev[3:10]), type = "pearson")
+corr1
+```
+
+### PCA
+```{r}
+# apply PCA - scale. = TRUE is highly 
+# advisable, but default is FALSE. 
+# ir.pca <- prcomp(log.ir,
+#                 center = TRUE,
+#                scale. = TRUE) 
+
+ev.pca <- prcomp(as.matrix(ev[3:33]), na.action = na.omit, center = TRUE, scale = TRUE) 
+
+prcomp(na.omit(as.matrix(ev[3:33])), scale=TRUE)
+prcomp(na.omit(ev[3:33]), scale=TRUE) 
+
+ev.pca
+
+# Pricipal Components Analysis
+# entering raw data and extracting PCs 
+# from the correlation matrix 
+# fit <- princomp(mydata, cor=TRUE)
+# summary(fit) # print variance accounted for 
+# loadings(fit) # pc loadings 
+# plot(fit,type="lines") # scree plot 
+# fit$scores # the principal components
+# biplot(fit)
+
+
+fit <- princomp(na.omit(ev[3:33]), cor=TRUE)
+
+princomp(na.omit(ev), cor = TRUE)
+
+summary(fit) # print variance accounted for 
+loadings(fit) # pc loadings 
+plot(fit,type="lines") # scree plot 
+fit$scores # the principal components
+biplot(fit)
+```
+
+
+### Cronbach's alpha
+```{r}
+# Apply to NEP scores
+nep <- read.csv("nep.csv")
+alpha(nep)
+
+# Apply to M-Turk, all variables
+mt <- read.csv("env_val_MT.csv")
+alpha(mt)
+# alpha(met[3:7])
+
+mt_nep <- (mt[3:7]) # only NEP values
+# alpha(mt_nep)
+alpha(mt_nep, check.keys=TRUE)
+
+mt_val <- (mt[3:21]) # includes all value prompts
+alpha(mt_val, check.keys = TRUE)
+```
+

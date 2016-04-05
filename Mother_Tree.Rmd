@@ -11,6 +11,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 ![alt text](Pandora8.jpg)
+## PCA & Factor Analysis
 
 #### Setup
 
@@ -42,19 +43,15 @@ ev_mt <- read.csv("ev_mt.csv")
 
 ### Cronbach's alpha
 ```{r}
-# Apply to relational and NEP variables
+# Cronbach's alpha for relational and NEP variables
 alpha(ev1, check.keys = TRUE)
 
-
-# Apply to NEP variables
+# Cronbach's alpha for only NEP variables
 nep <- read.csv("nep.csv")
 alpha(nep)
 
-# mt_nep <- (ev_mt[3:7]) # only NEP values
-# alpha(mt_nep)
-# alpha(mt_nep, check.keys=TRUE)
-
-mt_val <- (ev_mt[3:21]) # includes all value prompts
+#Cronbach's alpha for M-Turk value prompt data
+mt_val <- (ev_mt[3:21]) 
 str(mt_val)
 alpha(mt_val, check.keys = TRUE)
 ```
@@ -69,14 +66,16 @@ loadings(fit_ev_mt) # pc loadings
 plot(fit_ev_mt,type="lines") # scree plot 
 fit_ev_mt$scores # the principal components
 biplot(fit_ev_mt)
-# what is this?
+# how do I interpret this?
 # how do I account for demographic features?
 ```
 
 ```{r}
-# data from mt, t and f
+# data from all three surveys: mt, t and f
 
 fit_ev <- prcomp(~ ., data = ev1, na.action = na.omit, scale=TRUE)
+
+fit_ev
 
 summary(fit_ev) # print variance accounted for 
 loadings(fit_ev) # pc loadings 
@@ -105,7 +104,8 @@ print(g)
  #        scores = c("none", "regression", "Bartlett"),
  #        rotation = "varimax", control = NULL, ...)
  
- ## M-Turk Data
+ ## FA for M-Turk Data
+
 ```{r}
 fit_mt <- factanal(~ ., factors = 7, data = mt_val)
 print(fit_mt, digits=2, cutoff=.3, sort=TRUE)
@@ -160,7 +160,7 @@ plot(load,type="n") # set up plot
 text(load,labels=names(ev1),cex=.7) # add variable names
 ```
 
-## All 3 Samples Pooled
+## FA for all three surveys pooled
 ```{r}
 fit_ev <- factanal(~ ., factors = 4, data = ev1)
 print(fit_ev, digits=2, cutoff=.3, sort=TRUE)

@@ -83,28 +83,6 @@ Violin plot, all value statements
 eval_t3 <- eval_t2 %>% 
   filter(response > 0)
 
-val <- ggplot(eval_t3, aes(x= val_state, y = response, fill = v_type)) +
-  geom_violin() +
-  scale_fill_viridis(discrete=TRUE, option = "viridis") +
-  xlab("All Value Statements") + ylab("Mean Level of Agreement") +
-  ggtitle("Attitudes toward all value statements") +
-  theme_pander() +
-  facet_wrap(~ v_type, scales = "free_x")
-
-val
-
-#rel_v <- ggplot(rel, aes(x= val_state, y = response, fill = val_state)) +
-  geom_violin() +
-  scale_fill_viridis(discrete=TRUE, "") +
-  xlab("Relational Value Statements") + ylab("Mean Level of Agreement") +
-  ggtitle("Attitudes toward relational statements") +
-  theme_pander() +
-  facet_wrap(~ sub_pop)
-
-val
-
-ggsave(val, file="/Users/sarahklain/Documents/R_2015/env_val/figs/vio_all.pdf")
-
 val2 <- ggplot(eval_t3, aes(x= val_state, y = response, fill = v_type)) +
   geom_violin() +
   scale_fill_viridis(discrete=TRUE, option = "plasma") +
@@ -126,25 +104,32 @@ eval_t4 <- eval_t3 %>%
   filter(sub_pop == "M-Turk")
 
 #Histogram of 5 types of statements
+# I need to nomarlize by the number of questions per type of statement
 bar_type <- ggplot(eval_t4, aes(x = response, fill = v_type)) +
   geom_histogram(binwidth = 0.5) +
   scale_fill_viridis(discrete=TRUE, option = "viridis") +
   xlab("Response\n1=strongly disagree; 5=strongly agree") +
   ggtitle("To what extent do you agree with these statements?") +
   coord_cartesian(xlim = c(1, 5)) +
-  facet_wrap(~ v_type)
+  facet_grid(~ v_type)
 
 bar_type
+
+eval_t4 %>% 
+  count(val_state)
+
+eval_t4$val_state <- factor(eval_t4$val_state, levels=c("extract_r_ins" ,"loss_r_ins","clean_inst","kin_met", "resp_met", "iden_met","other_met", "decade_r_mor","right_r_mor", "abuse_nep", "bal_r_nep", "crisis_r_nep", "spaceship_nep", "bau_nep", "comm_rel", "wild_rel", "iden_rel", "kin_rel", "health_rel2", "other_rel"))
 
 bar_all <- ggplot(eval_t4, aes(x = response, fill = v_type)) +
   geom_histogram(binwidth = 0.5) +
   scale_fill_viridis(discrete=TRUE, option = "viridis") +
-  xlab("Response\n1=strongly disagree; 5=strongly agree") +
+  xlab("Response\n1 = Strongly Disagree; 2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
   ggtitle("To what extent do you agree with these statements?") +
   coord_cartesian(xlim = c(1, 5)) +
-  facet_wrap("val_state")
+  facet_grid(~ val_state)
 
 bar_all
+ggsave(bar_all, file="/Users/sarahklain/Documents/R_2015/env_val/figs/bar_all.pdf")
 ```
 
 ```{r}

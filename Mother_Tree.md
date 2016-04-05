@@ -18,6 +18,25 @@ library(Hmisc) #to run correlations with sig levels
 ## Loading required package: survival
 ## Loading required package: Formula
 ## Loading required package: ggplot2
+```
+
+```
+## Warning: package 'ggplot2' was built under R version 3.2.4
+```
+
+```
+## Warning: replacing previous import by 'ggplot2::unit' when loading 'Hmisc'
+```
+
+```
+## Warning: replacing previous import by 'ggplot2::arrow' when loading 'Hmisc'
+```
+
+```
+## Warning: replacing previous import by 'scales::alpha' when loading 'Hmisc'
+```
+
+```
 ## 
 ## Attaching package: 'Hmisc'
 ## 
@@ -27,25 +46,14 @@ library(Hmisc) #to run correlations with sig levels
 ```
 
 ```r
-library(ggplot2) # for great charts
-library(ggthemes) # for pretty themes in ggplot
-library(viridis) # for pretty colors
-suppressMessages(library(dplyr))
+# library(ggplot2) # for great charts
+# library(ggthemes) # for pretty themes in ggplot
+# library(viridis) # for pretty colors
+# suppressMessages(library(dplyr))
 library(knitr) # tool for making nice tables
-library(tidyr) # data table wrangling tool
-library(broom)
-library(stargazer) # mekes pretty tables
-```
-
-```
-## 
-## Please cite as: 
-## 
-##  Hlavac, Marek (2015). stargazer: Well-Formatted Regression and Summary Statistics Tables.
-##  R package version 5.2. http://CRAN.R-project.org/package=stargazer
-```
-
-```r
+# library(tidyr) # data table wrangling tool
+# library(broom)
+# library(stargazer) # mekes pretty tables
 library(stats) # for PCA & FA
 library(psych) # for PCA
 ```
@@ -58,22 +66,89 @@ library(psych) # for PCA
 ## 
 ##     describe
 ## 
-## The following object is masked from 'package:ggplot2':
+## The following objects are masked from 'package:ggplot2':
 ## 
-##     %+%
+##     %+%, alpha
+```
+
+```r
+#library(dplyr)
 ```
 
 #### Input data
 
 ```r
 setwd("/Users/sarahklain/Documents/R_2015/navi") #set working directory
-ev <- read.csv("Env_Val_02_29_2016.csv")
+#ev <- read.csv("Env_Val_02_29_2016.csv")
+
+ev <- read.csv("ev_mt_f_t_no_R.csv")
+ev1 <- (ev[3:11])
+
+ev_mt <- read.csv("ev_mt.csv")
 ```
 
 ### Cronbach's alpha
 
 ```r
-# Apply to NEP scores
+# Cronbach's alpha for relational and NEP variables
+alpha(ev1, check.keys = TRUE)
+```
+
+```
+## Warning in alpha(ev1, check.keys = TRUE): Some items were negatively correlated with total scale and were automatically reversed.
+##  This is indicated by a negative sign for the variable name.
+```
+
+```
+## 
+## Reliability analysis   
+## Call: alpha(x = ev1, check.keys = TRUE)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd
+##       0.81      0.82    0.83      0.34 4.6 0.015    4 0.64
+## 
+##  lower alpha upper     95% confidence boundaries
+## 0.78 0.81 0.84 
+## 
+##  Reliability if an item is dropped:
+##               raw_alpha std.alpha G6(smc) average_r S/N alpha se
+## abuse_nep          0.77      0.79    0.80      0.32 3.8    0.017
+## bal_nep-           0.79      0.81    0.82      0.34 4.1    0.016
+## crisis_nep-        0.84      0.84    0.85      0.39 5.2    0.014
+## spaceship_nep      0.78      0.80    0.81      0.33 3.9    0.017
+## bau_nep            0.76      0.78    0.79      0.31 3.6    0.018
+## comm_rel           0.79      0.81    0.82      0.34 4.2    0.016
+## wild_rel           0.78      0.80    0.81      0.33 3.9    0.017
+## iden_rel           0.78      0.79    0.80      0.33 3.9    0.017
+## kin_rel            0.79      0.80    0.81      0.33 4.0    0.016
+## 
+##  Item statistics 
+##                 n raw.r std.r r.cor r.drop mean   sd
+## abuse_nep     918  0.72  0.72  0.68   0.62  4.3 0.91
+## bal_nep-      916  0.63  0.62  0.54   0.50  4.0 1.05
+## crisis_nep-   915  0.41  0.36  0.22   0.20  3.6 1.31
+## spaceship_nep 914  0.68  0.67  0.63   0.55  4.0 1.06
+## bau_nep       917  0.79  0.78  0.78   0.70  4.0 1.05
+## comm_rel      909  0.57  0.60  0.52   0.46  4.2 0.80
+## wild_rel      913  0.66  0.67  0.62   0.54  3.8 1.00
+## iden_rel      913  0.68  0.69  0.66   0.57  4.0 0.93
+## kin_rel       912  0.64  0.66  0.61   0.53  4.0 0.89
+## 
+## Non missing response frequency for each item
+##                  1 1.5    2 2.5    3 3.5    4 4.5    5 miss
+## abuse_nep     0.02   0 0.03   0 0.12   0 0.32   0 0.51 0.01
+## bal_nep       0.37   0 0.36   0 0.16   0 0.08   0 0.03 0.01
+## crisis_nep    0.30   0 0.29   0 0.18   0 0.12   0 0.10 0.01
+## spaceship_nep 0.03   0 0.08   0 0.16   0 0.33   0 0.41 0.01
+## bau_nep       0.02   0 0.08   0 0.17   0 0.29   0 0.44 0.01
+## comm_rel      0.01   0 0.02   0 0.12   0 0.42   0 0.43 0.02
+## wild_rel      0.02   0 0.09   0 0.18   0 0.44   0 0.27 0.01
+## iden_rel      0.01   0 0.06   0 0.19   0 0.39   0 0.34 0.01
+## kin_rel       0.01   0 0.05   0 0.17   0 0.45   0 0.32 0.02
+```
+
+```r
+# Cronbach's alpha for only NEP variables
 nep <- read.csv("nep.csv")
 alpha(nep)
 ```
@@ -115,172 +190,8 @@ alpha(nep)
 ```
 
 ```r
-# Apply to M-Turk, all variables
-mt <- read.csv("env_val_MT.csv")
-alpha(mt)
-```
-
-```
-## Warning in var(if (is.vector(x)) x else as.double(x), na.rm = na.rm): NAs
-## introduced by coercion
-```
-
-```
-## Warning in var(if (is.vector(x)) x else as.double(x), na.rm = na.rm): NAs
-## introduced by coercion
-```
-
-```
-## Warning in alpha(mt): Item = sub_pop had no variance and was deleted
-```
-
-```
-## Warning in alpha(mt): Item = id_num had no variance and was deleted
-```
-
-```
-## Warning in alpha(mt): Some items were negatively correlated with the total
-## scale and probably should be reversed. To do this, run the function again
-## with the 'check.keys=TRUE' option
-```
-
-```
-## Some items ( bal_nep crisis_nep extract_ins loss_instr decade_mor tech right univ_degr income self.emp pol_dem coast_rec ) were negatively correlated with the total scale and probably should be reversed.  To do this, run the function again with the 'check.keys=TRUE' option
-```
-
-```
-## 
-## Reliability analysis   
-## Call: alpha(x = mt)
-## 
-##   raw_alpha std.alpha G6(smc) average_r  S/N   ase mean   sd
-##       0.14      0.49    0.69     0.029 0.95 0.045  3.6 0.41
-## 
-##  lower alpha upper     95% confidence boundaries
-## 0.05 0.14 0.23 
-## 
-##  Reliability if an item is dropped:
-##               raw_alpha std.alpha G6(smc) average_r  S/N alpha se
-## abuse_nep         0.132      0.44    0.66     0.025 0.80    0.045
-## bal_nep           0.157      0.53    0.71     0.034 1.11    0.045
-## crisis_nep        0.163      0.55    0.72     0.038 1.21    0.045
-## spaceship_nep     0.125      0.45    0.67     0.026 0.83    0.044
-## bau_nep           0.131      0.45    0.66     0.025 0.81    0.044
-## extract_ins       0.153      0.52    0.71     0.033 1.07    0.045
-## loss_instr        0.158      0.53    0.71     0.035 1.11    0.045
-## decade_mor        0.168      0.54    0.72     0.037 1.18    0.045
-## comm_rel          0.127      0.44    0.66     0.024 0.77    0.045
-## wild_rel          0.116      0.42    0.65     0.023 0.73    0.044
-## clean_inst        0.135      0.45    0.66     0.025 0.80    0.045
-## tech              0.145      0.48    0.69     0.029 0.91    0.045
-## iden_rel          0.100      0.41    0.64     0.022 0.71    0.044
-## kin_rel           0.104      0.42    0.64     0.022 0.71    0.044
-## right             0.170      0.54    0.71     0.037 1.19    0.045
-## health_rel        0.124      0.46    0.67     0.027 0.86    0.044
-## other_rel         0.130      0.44    0.66     0.024 0.77    0.045
-## kin_met           0.092      0.41    0.63     0.022 0.68    0.044
-## resp_met          0.102      0.41    0.64     0.022 0.68    0.044
-## iden_met          0.085      0.41    0.64     0.022 0.69    0.043
-## other_met         0.125      0.43    0.65     0.024 0.76    0.044
-## white             0.138      0.49    0.69     0.030 0.95    0.045
-## female            0.140      0.50    0.70     0.032 1.01    0.045
-## age               0.477      0.49    0.70     0.031 0.98    0.038
-## univ_degr         0.135      0.49    0.70     0.031 0.98    0.045
-## income            0.157      0.51    0.70     0.032 1.03    0.043
-## wages             0.144      0.50    0.70     0.032 1.01    0.045
-## self.emp          0.141      0.50    0.70     0.031 1.00    0.045
-## pol_dem           0.147      0.52    0.68     0.033 1.06    0.045
-## pol_ind           0.145      0.50    0.68     0.032 1.02    0.045
-## pol_rep           0.141      0.50    0.69     0.032 1.02    0.045
-## coast_rec         0.145      0.51    0.71     0.033 1.04    0.045
-## 
-##  Item statistics 
-##                 n   raw.r  std.r   r.cor  r.drop   mean    sd
-## abuse_nep     400  0.1546  0.461  0.4925  0.0951  4.253  0.80
-## bal_nep       400 -0.0348 -0.091 -0.1856 -0.1082  2.188  0.97
-## crisis_nep    400 -0.0680 -0.276 -0.3944 -0.1448  2.033  1.03
-## spaceship_nep 398  0.2107  0.406  0.3920  0.1401  3.877  0.95
-## bau_nep       400  0.1677  0.453  0.4858  0.0933  3.895  0.99
-## extract_ins   400 -0.0053 -0.033 -0.1556 -0.0780  3.192  0.95
-## loss_instr    398 -0.0160 -0.100 -0.2213 -0.0990  2.226  1.09
-## decade_mor    400 -0.1057 -0.232 -0.3476 -0.1816  2.140  1.02
-## comm_rel      399  0.2113  0.518  0.5268  0.1583  4.068  0.73
-## wild_rel      400  0.2744  0.584  0.6236  0.2060  3.697  0.96
-## clean_inst    400  0.1409  0.460  0.4668  0.1018  4.685  0.52
-## tech          400  0.0559  0.262  0.1883 -0.0129  3.498  0.90
-## iden_rel      400  0.3925  0.632  0.6965  0.3307  3.822  0.94
-## kin_rel       398  0.3815  0.625  0.6836  0.3231  4.003  0.87
-## right         398 -0.1326 -0.244 -0.3536 -0.2052  1.995  0.99
-## health_rel    398  0.2108  0.359  0.3290  0.1347  3.719  1.05
-## other_rel     400  0.1812  0.514  0.5320  0.1310  4.343  0.70
-## kin_met       398  0.4036  0.678  0.7670  0.3226  3.382  1.14
-## resp_met      399  0.3793  0.676  0.7561  0.3157  3.985  0.95
-## iden_met      400  0.4149  0.662  0.7371  0.3325  2.987  1.25
-## other_met     400  0.2107  0.541  0.5660  0.1417  4.088  0.93
-## white         400  0.1163  0.192  0.0919  0.0885  0.825  0.38
-## female        400  0.0680  0.085 -0.0234  0.0315  0.590  0.49
-## age           400  0.8431  0.140  0.0322  0.0046 32.383 11.07
-## univ_degr     400  0.1524  0.138  0.0292  0.1168  0.662  0.47
-## income        400  0.1641  0.052 -0.0751 -0.0273  5.362  2.51
-## wages         400  0.0216  0.082 -0.0247 -0.0161  0.560  0.50
-## self.emp      400  0.0472  0.094 -0.0074  0.0239  0.107  0.31
-## pol_dem       400 -0.0332 -0.012 -0.0595 -0.0706  0.415  0.49
-## pol_ind       400  0.0022  0.071  0.0399 -0.0344  0.407  0.49
-## pol_rep       400  0.0608  0.064 -0.0082  0.0386  0.085  0.28
-## coast_rec     400  0.0024  0.025 -0.1159 -0.0329  0.360  0.48
-```
-
-```r
-# alpha(met[3:7])
-
-mt_nep <- (mt[3:7]) # only NEP values
-# alpha(mt_nep)
-alpha(mt_nep, check.keys=TRUE)
-```
-
-```
-## Warning in alpha(mt_nep, check.keys = TRUE): Some items were negatively correlated with total scale and were automatically reversed.
-##  This is indicated by a negative sign for the variable name.
-```
-
-```
-## 
-## Reliability analysis   
-## Call: alpha(x = mt_nep, check.keys = TRUE)
-## 
-##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd
-##       0.84      0.84    0.82      0.52 5.3 0.028    4 0.74
-## 
-##  lower alpha upper     95% confidence boundaries
-## 0.79 0.84 0.89 
-## 
-##  Reliability if an item is dropped:
-##               raw_alpha std.alpha G6(smc) average_r S/N alpha se
-## abuse_nep          0.80      0.80    0.77      0.50 4.0    0.036
-## bal_nep-           0.82      0.83    0.79      0.54 4.8    0.034
-## crisis_nep-        0.79      0.80    0.75      0.49 3.9    0.036
-## spaceship_nep      0.84      0.84    0.81      0.57 5.2    0.033
-## bau_nep            0.78      0.79    0.75      0.48 3.7    0.037
-## 
-##  Item statistics 
-##                 n raw.r std.r r.cor r.drop mean   sd
-## abuse_nep     400  0.79  0.81  0.75   0.69  4.3 0.80
-## bal_nep-      400  0.75  0.74  0.64   0.59  3.8 0.97
-## crisis_nep-   400  0.83  0.82  0.77   0.70  4.0 1.03
-## spaceship_nep 398  0.70  0.71  0.59   0.53  3.9 0.95
-## bau_nep       400  0.84  0.84  0.80   0.73  3.9 0.99
-## 
-## Non missing response frequency for each item
-##                  1    2    3    4    5 miss
-## abuse_nep     0.00 0.03 0.10 0.43 0.43 0.00
-## bal_nep       0.24 0.48 0.16 0.11 0.02 0.00
-## crisis_nep    0.37 0.36 0.16 0.10 0.01 0.00
-## spaceship_nep 0.01 0.11 0.15 0.47 0.26 0.01
-## bau_nep       0.02 0.09 0.18 0.41 0.30 0.00
-```
-
-```r
-mt_val <- (mt[3:21]) # includes all value prompts
+#Cronbach's alpha for M-Turk value prompt data
+mt_val <- (ev_mt[3:21]) 
 str(mt_val)
 ```
 
@@ -394,21 +305,13 @@ alpha(mt_val, check.keys = TRUE)
 ## resp_met      0.02 0.03 0.24 0.36 0.35 0.00
 ```
 
-### Correlation Matrix
-
-
-```r
-# corr1 <- rcorr(mt_val, type = "pearson")
-# corr1
-```
-
 ### PCA
 
 
 ```r
-fit <- prcomp(~ ., data=mt_val, na.action=na.omit, scale=TRUE)
+fit_ev_mt <- prcomp(~ ., data=mt_val, na.action=na.omit, scale=TRUE)
 
-summary(fit) # print variance accounted for 
+summary(fit_ev_mt) # print variance accounted for 
 ```
 
 ```
@@ -432,7 +335,7 @@ summary(fit) # print variance accounted for
 ```
 
 ```r
-loadings(fit) # pc loadings 
+loadings(fit_ev_mt) # pc loadings 
 ```
 
 ```
@@ -440,13 +343,99 @@ loadings(fit) # pc loadings
 ```
 
 ```r
-plot(fit,type="lines") # scree plot 
+plot(fit_ev_mt,type="lines") # scree plot 
+```
+
+![](Mother_Tree_files/figure-html/unnamed-chunk-4-1.png) 
+
+```r
+fit_ev_mt$scores # the principal components
+```
+
+```
+## NULL
+```
+
+```r
+biplot(fit_ev_mt)
+```
+
+![](Mother_Tree_files/figure-html/unnamed-chunk-4-2.png) 
+
+```r
+# what is this?
+# how do I account for demographic features?
+```
+
+
+```r
+# data from all three surveys: mt, t and f
+
+fit_ev <- prcomp(~ ., data = ev1, na.action = na.omit, scale=TRUE)
+
+fit_ev
+```
+
+```
+## Standard deviations:
+## [1] 1.9638405 1.1230006 0.9800090 0.8335437 0.7779137 0.7228354 0.6686091
+## [8] 0.5830746 0.5588671
+## 
+## Rotation:
+##                      PC1        PC2         PC3         PC4        PC5
+## abuse_nep      0.3709631 -0.3013228  0.20452981 -0.03201124  0.1740279
+## bal_nep       -0.3046918  0.3620514  0.10943881 -0.33578796  0.7668384
+## crisis_nep    -0.1277600  0.3717405  0.85001546  0.09412999 -0.2678406
+## spaceship_nep  0.3533437 -0.2782552  0.37936742 -0.10706032  0.2334809
+## bau_nep        0.4063242 -0.2667647  0.17577460 -0.14778353  0.1424981
+## comm_rel       0.3096774  0.3264253 -0.03242605  0.70329596  0.1175109
+## wild_rel       0.3466487  0.3232128 -0.15475021  0.21069542  0.3373483
+## iden_rel       0.3632067  0.3780694 -0.09368854 -0.34091145 -0.1831291
+## kin_rel        0.3395454  0.3706569 -0.12276584 -0.43453538 -0.2719679
+##                        PC6          PC7         PC8         PC9
+## abuse_nep     -0.170629437  0.723616840 -0.16443088  0.34449212
+## bal_nep       -0.227002942  0.035736393 -0.07976105 -0.06434990
+## crisis_nep     0.135132921  0.122653985  0.08102411 -0.04991224
+## spaceship_nep  0.001747844 -0.656538066 -0.01522585  0.39566436
+## bau_nep       -0.005672542  0.012123047  0.15107677 -0.81712393
+## comm_rel      -0.488552842 -0.117916535 -0.16279511 -0.09471296
+## wild_rel       0.659999779  0.110458527  0.36250702  0.11837200
+## iden_rel       0.218310187 -0.052112415 -0.71528987 -0.06778927
+## kin_rel       -0.423221214  0.006876043  0.51713302  0.15123947
+```
+
+```r
+summary(fit_ev) # print variance accounted for 
+```
+
+```
+## Importance of components:
+##                           PC1    PC2    PC3    PC4     PC5     PC6     PC7
+## Standard deviation     1.9638 1.1230 0.9800 0.8335 0.77791 0.72284 0.66861
+## Proportion of Variance 0.4285 0.1401 0.1067 0.0772 0.06724 0.05805 0.04967
+## Cumulative Proportion  0.4285 0.5686 0.6754 0.7526 0.81980 0.87785 0.92752
+##                            PC8    PC9
+## Standard deviation     0.58307 0.5589
+## Proportion of Variance 0.03778 0.0347
+## Cumulative Proportion  0.96530 1.0000
+```
+
+```r
+loadings(fit_ev) # pc loadings 
+```
+
+```
+## NULL
+```
+
+```r
+plot(fit_ev,type="lines") # scree plot 
 ```
 
 ![](Mother_Tree_files/figure-html/unnamed-chunk-5-1.png) 
 
 ```r
-fit$scores # the principal components
+fit_ev$scores # the principal components
 ```
 
 ```
@@ -454,16 +443,54 @@ fit$scores # the principal components
 ```
 
 ```r
-biplot(fit)
+biplot(fit_ev)
 ```
 
 ![](Mother_Tree_files/figure-html/unnamed-chunk-5-2.png) 
 
+
 ```r
-# what is this?
-# how do I account for demographic features?
-# next steps: Factor Analysis
+library(devtools) # for nice plots of PCAs
+# install_github("ggbiplot", "vqv")
+library(ggbiplot)
 ```
+
+```
+## Loading required package: plyr
+## 
+## Attaching package: 'plyr'
+## 
+## The following objects are masked from 'package:Hmisc':
+## 
+##     is.discrete, summarize
+## 
+## Loading required package: scales
+```
+
+```
+## Warning: package 'scales' was built under R version 3.2.3
+```
+
+```
+## 
+## Attaching package: 'scales'
+## 
+## The following objects are masked from 'package:psych':
+## 
+##     alpha, rescale
+```
+
+```r
+g <- ggbiplot(fit_ev, obs.scale = 1, var.scale = 1, 
+              ellipse = TRUE, 
+              circle = TRUE)
+g <- g + scale_color_discrete(name = '')
+g <- g + theme(legend.direction = 'horizontal', 
+               legend.position = 'top')
+print(g)
+```
+
+![](Mother_Tree_files/figure-html/unnamed-chunk-6-1.png) 
  
  ### Factor Analysis
 
@@ -472,6 +499,69 @@ biplot(fit)
  #        scores = c("none", "regression", "Bartlett"),
  #        rotation = "varimax", control = NULL, ...)
  
+ ## FA for M-Turk Data
+
+
+```r
+fit_mt <- factanal(~ ., factors = 7, data = mt_val)
+print(fit_mt, digits=2, cutoff=.3, sort=TRUE)
+```
+
+```
+## 
+## Call:
+## factanal(x = ~., factors = 7, data = mt_val)
+## 
+## Uniquenesses:
+##     abuse_nep       bal_nep    crisis_nep spaceship_nep       bau_nep 
+##          0.27          0.40          0.34          0.63          0.29 
+##   extract_ins    loss_instr    decade_mor      comm_rel      wild_rel 
+##          0.81          0.63          0.39          0.65          0.46 
+##    clean_inst          tech      iden_rel       kin_rel         right 
+##          0.00          0.82          0.43          0.00          0.18 
+##    health_rel     other_rel       kin_met      resp_met 
+##          0.66          0.51          0.29          0.35 
+## 
+## Loadings:
+##               Factor1 Factor2 Factor3 Factor4 Factor5 Factor6 Factor7
+## wild_rel       0.63                                                  
+## iden_rel       0.63                                                  
+## kin_met        0.82                                                  
+## resp_met       0.73                                                  
+## abuse_nep              0.73                                          
+## crisis_nep            -0.62    0.32           -0.34                  
+## spaceship_nep          0.52                                          
+## bau_nep                0.74                                          
+## bal_nep               -0.44    0.57                                  
+## clean_inst                             0.90                          
+## kin_rel        0.58                                    0.77          
+## right                 -0.32    0.49                            0.60  
+## extract_ins                    0.30                                  
+## loss_instr                     0.49                                  
+## decade_mor                     0.43           -0.34            0.41  
+## comm_rel       0.45                                                  
+## tech                           0.40                                  
+## health_rel                                     0.42                  
+## other_rel              0.37                    0.46                  
+## 
+##                Factor1 Factor2 Factor3 Factor4 Factor5 Factor6 Factor7
+## SS loadings       3.09    2.68    1.51    1.08    1.01    0.76    0.73
+## Proportion Var    0.16    0.14    0.08    0.06    0.05    0.04    0.04
+## Cumulative Var    0.16    0.30    0.38    0.44    0.49    0.53    0.57
+## 
+## Test of the hypothesis that 7 factors are sufficient.
+## The chi square statistic is 86.25 on 59 degrees of freedom.
+## The p-value is 0.0119
+```
+
+```r
+# plot factor 1 by factor 2 
+load <- fit_mt$loadings[,1:2] 
+plot(load,type="n") # set up plot 
+text(load,labels=names(mt_val),cex=.7) # add variable names
+```
+
+![](Mother_Tree_files/figure-html/unnamed-chunk-7-1.png) 
 
 
 ```r
@@ -533,5 +623,289 @@ plot(load,type="n") # set up plot
 text(load,labels=names(mt_val),cex=.7) # add variable names
 ```
 
-![](Mother_Tree_files/figure-html/unnamed-chunk-6-1.png) 
+![](Mother_Tree_files/figure-html/unnamed-chunk-8-1.png) 
+
+
+```r
+fit_mt <- factanal(~ ., factors = 4, data = mt_val)
+print(fit_mt, digits=2, cutoff=.3, sort=TRUE)
+```
+
+```
+## 
+## Call:
+## factanal(x = ~., factors = 4, data = mt_val)
+## 
+## Uniquenesses:
+##     abuse_nep       bal_nep    crisis_nep spaceship_nep       bau_nep 
+##          0.40          0.49          0.37          0.65          0.28 
+##   extract_ins    loss_instr    decade_mor      comm_rel      wild_rel 
+##          0.82          0.70          0.37          0.66          0.53 
+##    clean_inst          tech      iden_rel       kin_rel         right 
+##          0.63          0.86          0.43          0.45          0.29 
+##    health_rel     other_rel       kin_met      resp_met 
+##          0.69          0.43          0.28          0.37 
+## 
+## Loadings:
+##               Factor1 Factor2 Factor3 Factor4
+## wild_rel       0.61                          
+## iden_rel       0.67                          
+## kin_rel        0.67                          
+## kin_met        0.83                          
+## resp_met       0.73                          
+## abuse_nep              0.65                  
+## bal_nep               -0.52    0.46          
+## crisis_nep            -0.68                  
+## spaceship_nep          0.51                  
+## bau_nep                0.77                  
+## decade_mor                     0.62   -0.32  
+## right                 -0.32    0.69          
+## other_rel      0.31    0.37            0.58  
+## extract_ins                    0.32          
+## loss_instr                     0.42          
+## comm_rel       0.49                          
+## clean_inst             0.38            0.34  
+## tech                           0.34          
+## health_rel                             0.37  
+## 
+##                Factor1 Factor2 Factor3 Factor4
+## SS loadings       3.42    2.90    1.86    1.12
+## Proportion Var    0.18    0.15    0.10    0.06
+## Cumulative Var    0.18    0.33    0.43    0.49
+## 
+## Test of the hypothesis that 4 factors are sufficient.
+## The chi square statistic is 205.03 on 101 degrees of freedom.
+## The p-value is 4.56e-09
+```
+
+```r
+# plot factor 1 by factor 2 
+load <- fit_mt$loadings[,1:2] 
+plot(load,type="n") # set up plot 
+text(load,labels=names(mt_val),cex=.7) # add variable names
+```
+
+![](Mother_Tree_files/figure-html/unnamed-chunk-9-1.png) 
+
+
+```r
+fit_mt <- factanal(~ ., factors = 3, data = mt_val)
+print(fit_mt, digits=2, cutoff=.3, sort=TRUE)
+```
+
+```
+## 
+## Call:
+## factanal(x = ~., factors = 3, data = mt_val)
+## 
+## Uniquenesses:
+##     abuse_nep       bal_nep    crisis_nep spaceship_nep       bau_nep 
+##          0.41          0.50          0.37          0.66          0.30 
+##   extract_ins    loss_instr    decade_mor      comm_rel      wild_rel 
+##          0.83          0.70          0.37          0.68          0.53 
+##    clean_inst          tech      iden_rel       kin_rel         right 
+##          0.65          0.89          0.43          0.46          0.29 
+##    health_rel     other_rel       kin_met      resp_met 
+##          0.73          0.63          0.34          0.37 
+## 
+## Loadings:
+##               Factor1 Factor2 Factor3
+## comm_rel       0.51                  
+## wild_rel       0.62                  
+## iden_rel       0.69                  
+## kin_rel        0.69                  
+## kin_met        0.80                  
+## resp_met       0.74                  
+## abuse_nep              0.68          
+## bal_nep               -0.54    0.45  
+## crisis_nep            -0.73          
+## spaceship_nep          0.52          
+## bau_nep                0.78          
+## decade_mor            -0.36    0.66  
+## right                 -0.37    0.70  
+## extract_ins                    0.30  
+## loss_instr                     0.42  
+## clean_inst             0.45          
+## tech                           0.32  
+## health_rel             0.32   -0.34  
+## other_rel      0.35    0.47          
+## 
+##                Factor1 Factor2 Factor3
+## SS loadings       3.53    3.38    1.96
+## Proportion Var    0.19    0.18    0.10
+## Cumulative Var    0.19    0.36    0.47
+## 
+## Test of the hypothesis that 3 factors are sufficient.
+## The chi square statistic is 253 on 117 degrees of freedom.
+## The p-value is 5.03e-12
+```
+
+```r
+# plot factor 1 by factor 2 
+load <- fit_mt$loadings[,1:2] 
+plot(load,type="n") # set up plot 
+text(load,labels=names(mt_val),cex=.7) # add variable names
+```
+
+![](Mother_Tree_files/figure-html/unnamed-chunk-10-1.png) 
+
+
+```r
+fit_mt <- factanal(~ ., factors = 2, data = mt_val)
+print(fit_mt, digits=2, cutoff=.3, sort=TRUE)
+```
+
+```
+## 
+## Call:
+## factanal(x = ~., factors = 2, data = mt_val)
+## 
+## Uniquenesses:
+##     abuse_nep       bal_nep    crisis_nep spaceship_nep       bau_nep 
+##          0.45          0.49          0.41          0.69          0.44 
+##   extract_ins    loss_instr    decade_mor      comm_rel      wild_rel 
+##          0.84          0.74          0.51          0.68          0.53 
+##    clean_inst          tech      iden_rel       kin_rel         right 
+##          0.65          0.95          0.43          0.47          0.46 
+##    health_rel     other_rel       kin_met      resp_met 
+##          0.74          0.64          0.34          0.37 
+## 
+## Loadings:
+##               Factor1 Factor2
+## abuse_nep      0.68          
+## bal_nep       -0.71          
+## crisis_nep    -0.75          
+## bau_nep        0.68    0.32  
+## decade_mor    -0.66          
+## clean_inst     0.52          
+## right         -0.68          
+## comm_rel               0.51  
+## wild_rel               0.63  
+## iden_rel       0.33    0.68  
+## kin_rel                0.69  
+## kin_met                0.81  
+## resp_met               0.73  
+## spaceship_nep  0.49          
+## extract_ins   -0.38          
+## loss_instr    -0.47          
+## tech                         
+## health_rel     0.47          
+## other_rel      0.48    0.36  
+## 
+##                Factor1 Factor2
+## SS loadings       4.65    3.52
+## Proportion Var    0.24    0.19
+## Cumulative Var    0.24    0.43
+## 
+## Test of the hypothesis that 2 factors are sufficient.
+## The chi square statistic is 415.66 on 134 degrees of freedom.
+## The p-value is 1.37e-30
+```
+
+```r
+# plot factor 1 by factor 2 
+load <- fit_mt$loadings[,1:2] 
+plot(load,type="n") # set up plot 
+text(load,labels=names(mt_val),cex=.7) # add variable names
+```
+
+![](Mother_Tree_files/figure-html/unnamed-chunk-11-1.png) 
+
+
+```r
+fit_ev <- factanal(~ ., factors = 3, data = ev1)
+print(fit_ev, digits=2, cutoff=.3, sort=TRUE)
+```
+
+```
+## 
+## Call:
+## factanal(x = ~., factors = 3, data = ev1)
+## 
+## Uniquenesses:
+##     abuse_nep       bal_nep    crisis_nep spaceship_nep       bau_nep 
+##          0.44          0.68          0.00          0.45          0.26 
+##      comm_rel      wild_rel      iden_rel       kin_rel 
+##          0.69          0.55          0.32          0.47 
+## 
+## Loadings:
+##               Factor1 Factor2 Factor3
+## abuse_nep      0.71                  
+## spaceship_nep  0.71                  
+## bau_nep        0.79    0.31          
+## comm_rel               0.50          
+## wild_rel               0.61          
+## iden_rel               0.80          
+## kin_rel                0.69          
+## crisis_nep                     0.99  
+## bal_nep       -0.50                  
+## 
+##                Factor1 Factor2 Factor3
+## SS loadings       2.11    2.00    1.03
+## Proportion Var    0.23    0.22    0.11
+## Cumulative Var    0.23    0.46    0.57
+## 
+## Test of the hypothesis that 3 factors are sufficient.
+## The chi square statistic is 67.79 on 12 degrees of freedom.
+## The p-value is 8.27e-10
+```
+
+```r
+# plot factor 1 by factor 2 
+load <- fit_ev$loadings[,1:2] 
+plot(load,type="n") # set up plot 
+text(load,labels=names(ev1),cex=.7) # add variable names
+```
+
+![](Mother_Tree_files/figure-html/unnamed-chunk-12-1.png) 
+
+## FA for all three surveys pooled
+
+```r
+fit_ev <- factanal(~ ., factors = 4, data = ev1)
+print(fit_ev, digits=2, cutoff=.3, sort=TRUE)
+```
+
+```
+## 
+## Call:
+## factanal(x = ~., factors = 4, data = ev1)
+## 
+## Uniquenesses:
+##     abuse_nep       bal_nep    crisis_nep spaceship_nep       bau_nep 
+##          0.44          0.68          0.00          0.46          0.25 
+##      comm_rel      wild_rel      iden_rel       kin_rel 
+##          0.00          0.58          0.11          0.54 
+## 
+## Loadings:
+##               Factor1 Factor2 Factor3 Factor4
+## abuse_nep      0.71                          
+## spaceship_nep  0.71                          
+## bau_nep        0.82                          
+## wild_rel               0.50                  
+## iden_rel               0.91                  
+## kin_rel                0.60                  
+## comm_rel                       0.93          
+## crisis_nep                             0.99  
+## bal_nep       -0.50                          
+## 
+##                Factor1 Factor2 Factor3 Factor4
+## SS loadings       2.17    1.70    1.04    1.02
+## Proportion Var    0.24    0.19    0.12    0.11
+## Cumulative Var    0.24    0.43    0.55    0.66
+## 
+## Test of the hypothesis that 4 factors are sufficient.
+## The chi square statistic is 6.5 on 6 degrees of freedom.
+## The p-value is 0.369
+```
+
+```r
+# plot factor 1 by factor 2 
+load <- fit_ev$loadings[,1:2] 
+plot(load,type="n") # set up plot 
+text(load,labels=names(ev1),cex=.7) # add variable names
+```
+
+![](Mother_Tree_files/figure-html/unnamed-chunk-13-1.png) 
+
 

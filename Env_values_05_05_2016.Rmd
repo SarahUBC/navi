@@ -75,25 +75,9 @@ ev_mor <- evtab %>%
 eval_t2 <- bind_rows(ev_nep, ev_inst, ev_rel, ev_met, ev_mor)
 str(eval_t2)
 summary(eval_t2)
-```
 
-Violin plot, all value statements
-
-```{r}
 eval_t3 <- eval_t2 %>% 
   filter(response > 0)
-
-val2 <- ggplot(eval_t3, aes(x= val_state, y = response, fill = v_type)) +
-  geom_violin() +
-  scale_fill_viridis(discrete=TRUE, option = "plasma") +
-  xlab("All Value Statements") + ylab("Mean Level of Agreement") +
-  ggtitle("Attitudes toward all value statements") +
-  theme_pander() +
-  facet_wrap(v_type ~ sub_pop, scales = "free_x")
-
-val2
-ggsave(val, file="/Users/sarahklain/Documents/R_2015/env_val/figs/vio_subpop.pdf")
-
 ```
 
 
@@ -114,10 +98,9 @@ bar_type <- ggplot(eval_t4, aes(x = response, fill = v_type)) +
   facet_grid(~ v_type)
 
 bar_type
+```
 
-eval_t4 %>% 
-  count(val_state)
-
+```{r}
 eval_t4$val_state <- factor(eval_t4$val_state, levels=c("extract_r_ins" ,"loss_r_ins","clean_inst","kin_met", "resp_met", "iden_met","other_met", "decade_r_mor","right_r_mor", "abuse_nep", "bal_r_nep", "crisis_r_nep", "spaceship_nep", "bau_nep", "comm_rel", "wild_rel", "iden_rel", "kin_rel", "health_rel2", "other_rel"))
 
 bar_all <- ggplot(eval_t4, aes(x = response, fill = v_type)) +
@@ -133,109 +116,73 @@ ggsave(bar_all, file="/Users/sarahklain/Documents/R_2015/env_val/figs/bar_all.pd
 ```
 
 ```{r}
+
+val_st_vio <- ggplot(eval_t4, aes(x = val_state, y = response, fill = v_type)) +
+ geom_violin(adjust=0.3) +
+  xlab("Statement") + ylab("Response\n1= stongly disagree; 5 = strongly agree") +
+  scale_fill_viridis(discrete=TRUE, "Category of Value\nStatement") +
+  ggtitle("To what extent do you agree with these value statements?") +
+  coord_cartesian(ylim = c(1, 5)) +
+  stat_summary(fun.y=mean, colour="red4", geom="point", 
+               shape=18, size=2)  
+
+val_st_vio
+```
+
+
+
+```{r}
+# Tried to get labeling of means with 2 decimal points. Needs more work. 
+# means <- aggregate(response ~ val_state, eval_t4, mean)
+# means2 = transform(summarise(group_by(eval_t4, val_state), label = mean(response)), 
+ #  Label = sprintf("%.02f", label))
+
+val_st_box <- ggplot(eval_t4, aes(x = val_state, y = response, fill = v_type)) +
+ geom_boxplot() +
+  xlab("Statement") + ylab("Response\n1= stongly disagree; 5 = strongly agree") +
+  scale_fill_viridis(discrete=TRUE, "Category of Value\nStatement") +
+  ggtitle("To what extent do you agree with these value statements?") +
+  coord_cartesian(ylim = c(1, 5)) +
+  stat_summary(fun.y=mean, colour="grey", geom="point", 
+               shape=18, size=3)  
+
+  #geom_text(data = means2, aes(label = Label, x = label, y = 0),  size=10)
+  #stat_summary(fun.y=mean, colour="darkred", geom="point", 
+   #            shape=18, size=3,show_guide = FALSE) 
+  #geom_text(data = means, aes(label = response, y = response + 0.08))
+
+val_st_box
+```
+
+T-tests to determine differences
+```{r}
+#find means and SD
+evt_s <- ev %>%
+  tbl_df
+
+evt_s_mt <- evt_s %>%
+  filter(sub_pop == "M-Turk")
+
+# paired t-test
+# t.test(y1,y2,paired=TRUE) # where y1 & y2 are numeric
+head(evt_s_mt)
+
+t.test(evt_s_mt$right_r_mor, evt_s_mt$wild_rel, paired = TRUE)
+t.test(evt_s_mt$spaceship_nep, evt_s_mt$wild_rel, paired = TRUE)
+t.test(evt_s_mt$wild_rel, evt_s_mt$iden_rel, paired = TRUE)
+t.test(evt_s_mt$wild_rel, evt_s_mt$health_rel2, paired = TRUE)
+```
+
+```{r}
 # Ward Hierarchical Clustering
-d <- dist(mydata, method = "euclidean") # distance matrix
-fit <- hclust(d, method="ward") 
-plot(fit) # display dendogram
-groups <- cutree(fit, k=5) # cut tree into 5 clusters
-# draw dendogram with red borders around the 5 clusters 
-rect.hclust(fit, k=5, border="red")
-```
+# hc = hclust(dist(evt_s_mt[3:33]))
+# plot(hc)
 
+hc = hclust(dist(mtcars))
+plot(hc)
 
-Relational
-```{r}
-rel <- eval_t3 %>% 
-  filter(v_type == "rel")
-  
-rel_v <- ggplot(rel, aes(x= val_state, y = response, fill = val_state)) +
-  geom_violin() +
-  scale_fill_viridis(discrete=TRUE, "") +
-  xlab("Relational Value Statements") + ylab("Mean Level of Agreement") +
-  ggtitle("Attitudes toward relational statements") +
-  theme_pander() +
-  facet_wrap(~ sub_pop)
-
-rel_v
-
-ggsave(val, file="/Users/sarahklain/Documents/R_2015/env_val/figs/rel_v.pdf")
-```
-
-
-NEP
-Relational
-```{r}
-nep <- eval_t3 %>% 
-  filter(v_type == "NEP")
-  
-nep_v <- ggplot(nep, aes(x= val_state, y = response, fill = val_state)) +
-  geom_violin() +
-  scale_fill_viridis(discrete=TRUE,option = "inferno") +
-  xlab("NEP Statements") + ylab("Mean Level of Agreement") +
-  ggtitle("Attitudes toward NEP statements") +
-  theme_pander() +
-  facet_wrap(~ sub_pop)
-
-nep_v
-
-ggsave(nep_v, file="/Users/sarahklain/Documents/R_2015/env_val/figs/nep_v.pdf")
-```
-
-
-Metaphors
-
-```{r}
-met <- eval_t3 %>% 
-  filter(v_type == "met")
-  
-met_v <- ggplot(met, aes(x= val_state, y = response, fill = val_state)) +
-  geom_violin() +
-  scale_fill_viridis(discrete=TRUE, option = "plasma") +
-  xlab("Metaphors") + ylab("Mean Level of Agreement") +
-  ggtitle("Attitudes toward Metaphors") +
-  theme_pander() +
-  facet_wrap(~ sub_pop)
-
-met_v
-
-ggsave(met_v, file="/Users/sarahklain/Documents/R_2015/env_val/figs/met_v.pdf")
-```
-
-Instrumental
-```{r}
-inst <- eval_t3 %>% 
-  filter(v_type == "inst")
-  
-inst_v <- ggplot(inst, aes(x= val_state, y = response, fill = val_state)) +
-  geom_violin() +
-  scale_fill_viridis(discrete=TRUE, option = "magma") +
-  xlab("Instrumental Value Statements") + ylab("Mean Level of Agreement") +
-  ggtitle("Attitudes toward Instrumental Value Statements") +
-  theme_pander() +
-  facet_wrap(~ sub_pop)
-
-inst_v
-
-ggsave(inst_v, file="/Users/sarahklain/Documents/R_2015/env_val/figs/inst_v.pdf")
-```
-
-Moral
-
-```{r}
-mor <- eval_t3 %>% 
-  filter(v_type == "moral")
-  
-mor_v <- ggplot(mor, aes(x= val_state, y = response, fill = val_state)) +
-  geom_violin() +
-  scale_fill_viridis(discrete=TRUE, option = "viridis") +
-  xlab("Moral Value Statements") + ylab("Mean Level of Agreement") +
-  ggtitle("Attitudes toward Moral Value Statements") +
-  theme_pander() +
-  facet_wrap(~ sub_pop)
-
-mor_v
-
-ggsave(inst_v, file="/Users/sarahklain/Documents/R_2015/env_val/figs/mor_v.pdf")
+# hc = hclust(dist(eval_t4[3:4]))
+# plot(hc)
 ```
 
 ### Correlations

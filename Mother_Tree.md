@@ -4,6 +4,7 @@ March 6, 2016
 
 
 ![alt text](Pandora8.jpg)
+## PCA & Factor Analysis
 
 #### Setup
 
@@ -46,10 +47,10 @@ library(Hmisc) #to run correlations with sig levels
 ```
 
 ```r
-# library(ggplot2) # for great charts
+ library(ggplot2) # for great charts
 # library(ggthemes) # for pretty themes in ggplot
-# library(viridis) # for pretty colors
-# suppressMessages(library(dplyr))
+library(viridis) # for pretty colors
+ suppressMessages(library(dplyr))
 library(knitr) # tool for making nice tables
 # library(tidyr) # data table wrangling tool
 # library(broom)
@@ -363,7 +364,7 @@ biplot(fit_ev_mt)
 ![](Mother_Tree_files/figure-html/unnamed-chunk-4-2.png) 
 
 ```r
-# what is this?
+# how do I interpret this?
 # how do I account for demographic features?
 ```
 
@@ -449,6 +450,8 @@ biplot(fit_ev)
 ![](Mother_Tree_files/figure-html/unnamed-chunk-5-2.png) 
 
 
+
+
 ```r
 library(devtools) # for nice plots of PCAs
 # install_github("ggbiplot", "vqv")
@@ -457,8 +460,18 @@ library(ggbiplot)
 
 ```
 ## Loading required package: plyr
+## -------------------------------------------------------------------------
+## You have loaded plyr after dplyr - this is likely to cause problems.
+## If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+## library(plyr); library(dplyr)
+## -------------------------------------------------------------------------
 ## 
 ## Attaching package: 'plyr'
+## 
+## The following objects are masked from 'package:dplyr':
+## 
+##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+##     summarize
 ## 
 ## The following objects are masked from 'package:Hmisc':
 ## 
@@ -492,6 +505,20 @@ print(g)
 
 ![](Mother_Tree_files/figure-html/unnamed-chunk-6-1.png) 
  
+###PCA with MT data
+
+
+```r
+gmt <- ggbiplot(fit_ev_mt, obs.scale = 1, var.scale = 1, 
+              ellipse = TRUE, 
+              circle = TRUE)
+gmt <- gmt + scale_color_discrete(name = '')
+gmt <- gmt + theme(legend.direction = 'horizontal', 
+               legend.position = 'top')
+print(gmt)
+```
+
+![](Mother_Tree_files/figure-html/unnamed-chunk-7-1.png) 
  ### Factor Analysis
 
  # factanal(x, factors, data = NULL, covmat = NULL, n.obs = NA,
@@ -561,7 +588,7 @@ plot(load,type="n") # set up plot
 text(load,labels=names(mt_val),cex=.7) # add variable names
 ```
 
-![](Mother_Tree_files/figure-html/unnamed-chunk-7-1.png) 
+![](Mother_Tree_files/figure-html/unnamed-chunk-8-1.png) 
 
 
 ```r
@@ -623,7 +650,7 @@ plot(load,type="n") # set up plot
 text(load,labels=names(mt_val),cex=.7) # add variable names
 ```
 
-![](Mother_Tree_files/figure-html/unnamed-chunk-8-1.png) 
+![](Mother_Tree_files/figure-html/unnamed-chunk-9-1.png) 
 
 
 ```r
@@ -682,10 +709,10 @@ print(fit_mt, digits=2, cutoff=.3, sort=TRUE)
 # plot factor 1 by factor 2 
 load <- fit_mt$loadings[,1:2] 
 plot(load,type="n") # set up plot 
-text(load,labels=names(mt_val),cex=.7) # add variable names
+text(load,labels=names(mt_val),cex=.8) # add variable names
 ```
 
-![](Mother_Tree_files/figure-html/unnamed-chunk-9-1.png) 
+![](Mother_Tree_files/figure-html/unnamed-chunk-10-1.png) 
 
 
 ```r
@@ -747,7 +774,7 @@ plot(load,type="n") # set up plot
 text(load,labels=names(mt_val),cex=.7) # add variable names
 ```
 
-![](Mother_Tree_files/figure-html/unnamed-chunk-10-1.png) 
+![](Mother_Tree_files/figure-html/unnamed-chunk-11-1.png) 
 
 
 ```r
@@ -809,7 +836,7 @@ plot(load,type="n") # set up plot
 text(load,labels=names(mt_val),cex=.7) # add variable names
 ```
 
-![](Mother_Tree_files/figure-html/unnamed-chunk-11-1.png) 
+![](Mother_Tree_files/figure-html/unnamed-chunk-12-1.png) 
 
 
 ```r
@@ -857,7 +884,7 @@ plot(load,type="n") # set up plot
 text(load,labels=names(ev1),cex=.7) # add variable names
 ```
 
-![](Mother_Tree_files/figure-html/unnamed-chunk-12-1.png) 
+![](Mother_Tree_files/figure-html/unnamed-chunk-13-1.png) 
 
 ## FA for all three surveys pooled
 
@@ -906,6 +933,252 @@ plot(load,type="n") # set up plot
 text(load,labels=names(ev1),cex=.7) # add variable names
 ```
 
-![](Mother_Tree_files/figure-html/unnamed-chunk-13-1.png) 
+![](Mother_Tree_files/figure-html/unnamed-chunk-14-1.png) 
 
+## Compare argument from one 
+t-test
+
+
+```r
+tkin <- t.test(mt_val$kin_rel,mt_val$kin_met,paired=TRUE)
+tkin
+```
+
+```
+## 
+## 	Paired t-test
+## 
+## data:  mt_val$kin_rel and mt_val$kin_met
+## t = 12.641, df = 395, p-value < 2.2e-16
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.5203307 0.7119925
+## sample estimates:
+## mean of the differences 
+##               0.6161616
+```
+
+```r
+summary(mt_val$kin_rel)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##   1.000   4.000   4.000   4.003   5.000   5.000       2
+```
+
+```r
+summary(mt_val$kin_met)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##   1.000   3.000   3.000   3.382   4.000   5.000       2
+```
+
+```r
+#less agreement with metaphor, more agreement with relational statement
+
+t_resp <- t.test(mt_val$res,mt_val$iden,paired=TRUE)
+
+summary(mt_val$kin_rel)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##   1.000   4.000   4.000   4.003   5.000   5.000       2
+```
+
+```r
+summary(mt_val$kin_met)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##   1.000   3.000   3.000   3.382   4.000   5.000       2
+```
+
+```r
+t_ot_cl <- t.test(mt_val$other_rel,mt_val$clean_inst,paired=TRUE)
+t_ot_cl
+```
+
+```
+## 
+## 	Paired t-test
+## 
+## data:  mt_val$other_rel and mt_val$clean_inst
+## t = -10.431, df = 399, p-value < 2.2e-16
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.4070525 -0.2779475
+## sample estimates:
+## mean of the differences 
+##                 -0.3425
+```
+
+```r
+t_kr_rm <- t.test(mt_val$kin_rel, mt_val$resp_met, paired = TRUE)
+t_kr_rm
+```
+
+```
+## 
+## 	Paired t-test
+## 
+## data:  mt_val$kin_rel and mt_val$resp_met
+## t = 0.29177, df = 396, p-value = 0.7706
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.07226920  0.09745812
+## sample estimates:
+## mean of the differences 
+##              0.01259446
+```
+
+```r
+t_cr_rm <- t.test(mt_val$comm_rel, mt_val$resp_met, paired = TRUE)
+t_cr_rm
+```
+
+```
+## 
+## 	Paired t-test
+## 
+## data:  mt_val$comm_rel and mt_val$resp_met
+## t = 1.8174, df = 397, p-value = 0.0699
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.006980835  0.177835106
+## sample estimates:
+## mean of the differences 
+##              0.08542714
+```
+
+```r
+t_hr_wr <- t.test(mt_val$health_rel, mt_val$wild_rel, paired = TRUE)
+t_hr_wr
+```
+
+```
+## 
+## 	Paired t-test
+## 
+## data:  mt_val$health_rel and mt_val$wild_rel
+## t = 0.32843, df = 397, p-value = 0.7428
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.1002199  0.1404209
+## sample estimates:
+## mean of the differences 
+##               0.0201005
+```
+
+```r
+t_cr_bn <- t.test(mt_val$comm_rel, mt_val$bau_nep, paired = TRUE)
+t_cr_bn
+```
+
+```
+## 
+## 	Paired t-test
+## 
+## data:  mt_val$comm_rel and mt_val$bau_nep
+## t = 3.4539, df = 398, p-value = 0.0006119
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.07557988 0.27529732
+## sample estimates:
+## mean of the differences 
+##               0.1754386
+```
+
+```r
+t_ir_bn <- t.test(mt_val$iden_rel, mt_val$health_rel, paired = TRUE)
+t_ir_bn
+```
+
+```
+## 
+## 	Paired t-test
+## 
+## data:  mt_val$iden_rel and mt_val$health_rel
+## t = 1.7992, df = 397, p-value = 0.07275
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.009781625  0.220836901
+## sample estimates:
+## mean of the differences 
+##               0.1055276
+```
+
+```r
+t_ir_wr <- t.test(mt_val$iden_rel, mt_val$wild_rel, paired = TRUE)
+t_ir_wr
+```
+
+```
+## 
+## 	Paired t-test
+## 
+## data:  mt_val$iden_rel and mt_val$wild_rel
+## t = 2.7584, df = 399, p-value = 0.006076
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.03591135 0.21408865
+## sample estimates:
+## mean of the differences 
+##                   0.125
+```
+ 
+ Average agreement with each prompt
+ Average2 = reverse coded prompts are reversed
+
+
+```r
+a_mt_val <- read.csv("ave_ev_mt.csv")
+
+a_mt_tbl <- a_mt_val %>% 
+  tbl_df
+
+
+a_mt_tbl2 <- a_mt_tbl %>% 
+  mutate(Prompt = reorder(Prompt, Average2)) %>% 
+  arrange(Average2)
+
+a_mt_tbl2
+```
+
+```
+## Source: local data frame [21 x 3]
+## 
+##         Prompt  Average Average2
+##         (fctr)    (dbl)    (dbl)
+## 1   loss_instr 2.226131 2.773869
+## 2      bal_nep 2.187500 2.812500
+## 3   decade_mor 2.140000 2.860000
+## 4   crisis_nep 2.032500 2.967500
+## 5     iden_met 2.987500 2.987500
+## 6        right 1.994975 3.005025
+## 7  extract_ins 3.192500 3.192500
+## 8      kin_met 3.381910 3.381910
+## 9         tech 3.497500 3.497500
+## 10    wild_rel 3.697500 3.697500
+## ..         ...      ...      ...
+```
+
+```r
+a_mt_bar <- ggplot(a_mt_tbl2, aes(x = Prompt, y = Average2, fill = Prompt)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  scale_fill_viridis(discrete=TRUE, option = "viridis") +
+  xlab("Value Prompt") +
+  ylab("Mean Response") +
+  ggtitle("Mean response to prompts\nTo what extent do you agree with these statements?") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position="none") 
+  #coord_cartesian(xlim = c(1, 5)) 
+
+a_mt_bar
+```
+
+![](Mother_Tree_files/figure-html/unnamed-chunk-16-1.png) 
 

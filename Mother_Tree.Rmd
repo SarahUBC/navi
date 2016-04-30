@@ -17,10 +17,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(Hmisc) #to run correlations with sig levels
-# library(ggplot2) # for great charts
+ library(ggplot2) # for great charts
 # library(ggthemes) # for pretty themes in ggplot
-# library(viridis) # for pretty colors
-# suppressMessages(library(dplyr))
+library(viridis) # for pretty colors
+ suppressMessages(library(dplyr))
 library(knitr) # tool for making nice tables
 # library(tidyr) # data table wrangling tool
 # library(broom)
@@ -84,6 +84,8 @@ fit_ev$scores # the principal components
 biplot(fit_ev)
 ```
 
+
+
 ```{r}
 library(devtools) # for nice plots of PCAs
 # install_github("ggbiplot", "vqv")
@@ -97,6 +99,18 @@ g <- g + theme(legend.direction = 'horizontal',
 print(g)
 ```
  
+###PCA with MT data
+
+```{r}
+gmt <- ggbiplot(fit_ev_mt, obs.scale = 1, var.scale = 1, 
+              ellipse = TRUE, 
+              circle = TRUE)
+gmt <- gmt + scale_color_discrete(name = '')
+gmt <- gmt + theme(legend.direction = 'horizontal', 
+               legend.position = 'top')
+print(gmt)
+
+```
  ### Factor Analysis
 
  # factanal(x, factors, data = NULL, covmat = NULL, n.obs = NA,
@@ -130,7 +144,7 @@ print(fit_mt, digits=2, cutoff=.3, sort=TRUE)
 # plot factor 1 by factor 2 
 load <- fit_mt$loadings[,1:2] 
 plot(load,type="n") # set up plot 
-text(load,labels=names(mt_val),cex=.7) # add variable names
+text(load,labels=names(mt_val),cex=.8) # add variable names
 ```
 
 ```{r}
@@ -170,4 +184,71 @@ plot(load,type="n") # set up plot
 text(load,labels=names(ev1),cex=.7) # add variable names
 ```
 
+## Compare argument from one 
+t-test
+
+```{r}
+tkin <- t.test(mt_val$kin_rel,mt_val$kin_met,paired=TRUE)
+tkin
+
+summary(mt_val$kin_rel)
+summary(mt_val$kin_met)
+
+#less agreement with metaphor, more agreement with relational statement
+
+t_resp <- t.test(mt_val$res,mt_val$iden,paired=TRUE)
+
+summary(mt_val$kin_rel)
+summary(mt_val$kin_met)
+
+t_ot_cl <- t.test(mt_val$other_rel,mt_val$clean_inst,paired=TRUE)
+t_ot_cl
+
+t_kr_rm <- t.test(mt_val$kin_rel, mt_val$resp_met, paired = TRUE)
+t_kr_rm
+
+t_cr_rm <- t.test(mt_val$comm_rel, mt_val$resp_met, paired = TRUE)
+t_cr_rm
+
+t_hr_wr <- t.test(mt_val$health_rel, mt_val$wild_rel, paired = TRUE)
+t_hr_wr
+
+t_cr_bn <- t.test(mt_val$comm_rel, mt_val$bau_nep, paired = TRUE)
+t_cr_bn
+
+t_ir_bn <- t.test(mt_val$iden_rel, mt_val$health_rel, paired = TRUE)
+t_ir_bn
+
+t_ir_wr <- t.test(mt_val$iden_rel, mt_val$wild_rel, paired = TRUE)
+t_ir_wr
+
+```
+ 
+ Average agreement with each prompt
+ Average2 = reverse coded prompts are reversed
+
+```{r}
+a_mt_val <- read.csv("ave_ev_mt.csv")
+
+a_mt_tbl <- a_mt_val %>% 
+  tbl_df
+
+
+a_mt_tbl2 <- a_mt_tbl %>% 
+  mutate(Prompt = reorder(Prompt, Average2)) %>% 
+  arrange(Average2)
+
+a_mt_tbl2
+
+a_mt_bar <- ggplot(a_mt_tbl2, aes(x = Prompt, y = Average2, fill = Prompt)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  scale_fill_viridis(discrete=TRUE, option = "viridis") +
+  xlab("Value Prompt") +
+  ylab("Mean Response") +
+  ggtitle("Mean response to prompts\nTo what extent do you agree with these statements?") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position="none") 
+  #coord_cartesian(xlim = c(1, 5)) 
+
+a_mt_bar
+```
 

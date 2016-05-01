@@ -1,0 +1,98 @@
+---
+title: "Cronbach alpha"
+author: "Sarah Klain"
+date: "April 30, 2016"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(stats) # for PCA & FA
+library(psych) # for PCA
+
+setwd("/Users/sarahklain/Documents/R_2015/navi")
+ev_mt <- read.csv("ev_mt.csv")
+
+```
+
+### Cronbach's alpha
+Cronbach's alpha for M-Turk value prompt data
+```{r}
+mt_val <- (ev_mt[3:23]) 
+str(mt_val)
+alpha(mt_val, check.keys = TRUE)
+```
+
+M-Turk NEP data
+```{r}
+mt_nep <- (ev_mt[3:7]) 
+str(mt_nep)
+alpha(mt_nep, check.keys = TRUE)
+```
+
+M-Turk metaphor data
+```{r}
+mt_met <- read.csv("met_mt.csv")
+str(mt_met)
+alpha(mt_met, check.keys = TRUE)
+```
+
+M-Turk relational data
+```{r}
+mt_rel <- read.csv("mt_rel.csv")
+str(mt_rel)
+alpha(mt_rel, check.keys = TRUE)
+```
+
+M-Turk instrumental data
+```{r}
+mt_ins <- read.csv("mt_inst.csv")
+str(mt_ins)
+alpha(mt_ins, check.keys = TRUE)
+```
+
+
+M-Turk moral data
+```{r}
+mt_ins <- read.csv("mt_mor_t.csv")
+mt_ins1 <- (mt_ins[1:2])
+str(mt_ins1)
+alpha(mt_ins, check.keys = TRUE)
+```
+
+Plot out alphas
+
+```{r}
+library(ggplot2)
+library(viridis)
+library(dplyr)
+
+cr <- read.csv("cron_a.csv")
+
+cron <- cr %>% 
+  tbl_df
+
+cron2 <- cron %>% 
+  mutate(prompt = reorder(prompt, alpha)) %>% 
+  arrange(alpha)
+
+cron_bar <- ggplot(cron2, aes(x = prompt, y = alpha, fill = prompt)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  scale_fill_viridis(discrete=TRUE, option = "viridis") +
+  xlab("Type of Prompt") +
+  ylab("Cronbach's alpha") +
+  ggtitle("Cronbach's alpha for types of statements") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position="none") 
+  #coord_cartesian(xlim = c(1, 5)) 
+
+cron_bar
+
+ggsave ("cron_bar.pdf", width = 9, height = 4)
+```
+

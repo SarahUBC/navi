@@ -51,7 +51,7 @@ nep <- read.csv("nep.csv")
 alpha(nep)
 
 #Cronbach's alpha for M-Turk value prompt data
-mt_val <- (ev_mt[3:21]) 
+mt_val <- (ev_mt[3:23]) 
 str(mt_val)
 alpha(mt_val, check.keys = TRUE)
 ```
@@ -184,47 +184,7 @@ plot(load,type="n") # set up plot
 text(load,labels=names(ev1),cex=.7) # add variable names
 ```
 
-## Compare argument from one 
-t-test
-
-```{r}
-tkin <- t.test(mt_val$kin_rel,mt_val$kin_met,paired=TRUE)
-tkin
-
-summary(mt_val$kin_rel)
-summary(mt_val$kin_met)
-
-#less agreement with metaphor, more agreement with relational statement
-
-t_resp <- t.test(mt_val$res,mt_val$iden,paired=TRUE)
-
-summary(mt_val$kin_rel)
-summary(mt_val$kin_met)
-
-t_ot_cl <- t.test(mt_val$other_rel,mt_val$clean_inst,paired=TRUE)
-t_ot_cl
-
-t_kr_rm <- t.test(mt_val$kin_rel, mt_val$resp_met, paired = TRUE)
-t_kr_rm
-
-t_cr_rm <- t.test(mt_val$comm_rel, mt_val$resp_met, paired = TRUE)
-t_cr_rm
-
-t_hr_wr <- t.test(mt_val$health_rel, mt_val$wild_rel, paired = TRUE)
-t_hr_wr
-
-t_cr_bn <- t.test(mt_val$comm_rel, mt_val$bau_nep, paired = TRUE)
-t_cr_bn
-
-t_ir_bn <- t.test(mt_val$iden_rel, mt_val$health_rel, paired = TRUE)
-t_ir_bn
-
-t_ir_wr <- t.test(mt_val$iden_rel, mt_val$wild_rel, paired = TRUE)
-t_ir_wr
-
-```
- 
- Average agreement with each prompt
+### Average agreement with each prompt
  Average2 = reverse coded prompts are reversed
 
 ```{r}
@@ -250,5 +210,59 @@ a_mt_bar <- ggplot(a_mt_tbl2, aes(x = Prompt, y = Average2, fill = Prompt)) +
   #coord_cartesian(xlim = c(1, 5)) 
 
 a_mt_bar
+
+ggsave ("a_mt_bar.pdf", width = 9, height = 4)
 ```
 
+## T-tests
+Compare value framings
+
+```{r}
+t_kr_km <- t.test(mt_val$kin_rel,mt_val$kin_met, paired = TRUE)
+t_kr_km 
+
+t_or_om <- t.test(mt_val$other_rel, mt_val$other_met, paired = TRUE)
+t_or_om
+
+#less agreement with metaphor, more agreement with relational statements
+```
+
+
+
+
+```{r}
+t_resp <- t.test(mt_val$res,mt_val$iden,paired=TRUE)
+
+summary(mt_val$kin_rel)
+summary(mt_val$kin_met)
+
+t_or_ci <- t.test(mt_val$other_rel,mt_val$clean_inst,paired=TRUE)
+t_or_ci
+
+t_kr_rm <- t.test(mt_val$kin_rel, mt_val$resp_met, paired = TRUE)
+t_kr_rm
+
+t_cr_rm <- t.test(mt_val$comm_rel, mt_val$resp_met, paired = TRUE)
+t_cr_rm
+
+t_hr_wr <- t.test(mt_val$health_rel, mt_val$wild_rel, paired = TRUE)
+t_hr_wr
+
+t_cr_bn <- t.test(mt_val$comm_rel, mt_val$bau_nep, paired = TRUE)
+t_cr_bn
+
+t_ir_bn <- t.test(mt_val$iden_rel, mt_val$health_rel, paired = TRUE)
+t_ir_bn
+
+t_ir_wr <- t.test(mt_val$iden_rel, mt_val$wild_rel, paired = TRUE)
+t_ir_wr
+
+t_om_wr <- t.test(mt_val$other_met, mt_val$wild_rel, paired = TRUE)
+t_om_wr
+
+t_om_rm <- t.test(mt_val$other_met, mt_val$resp_met, paired = TRUE)
+t_om_rm
+
+head(mt_val)
+
+```

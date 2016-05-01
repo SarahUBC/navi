@@ -1,0 +1,31 @@
+---
+title: "Cronbach alpha, PC, FA"
+author: "Sarah Klain"
+date: "April 30, 2016"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(stats) # for PCA & FA
+library(psych) # for PCA
+
+setwd("/Users/sarahklain/Documents/R_2015/navi")
+ev_mt <- read.csv("ev_mt.csv")
+
+```
+
+### Cronbach's alpha
+Cronbach's alpha for M-Turk value prompt data
+```{r}
+mt_val <- (ev_mt[3:23]) 
+str(mt_val)
+alpha(mt_val, check.keys = TRUE)
+```
+

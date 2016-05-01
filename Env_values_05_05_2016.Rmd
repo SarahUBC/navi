@@ -112,8 +112,10 @@ bar_all <- ggplot(eval_t4, aes(x = response, fill = v_type)) +
   facet_grid(~ val_state)
 
 bar_all
-ggsave(bar_all, file="/Users/sarahklain/Documents/R_2015/env_val/figs/bar_all.pdf")
+#ggsave(bar_all, file="/Users/sarahklain/Documents/R_2015/env_val/figs/bar_all.pdf")
 ```
+ 
+### All statements, violin plot with mean
 
 ```{r}
 
@@ -123,7 +125,7 @@ val_st_vio <- ggplot(eval_t4, aes(x = val_state, y = response, fill = v_type)) +
   scale_fill_viridis(discrete=TRUE, "Category of Value\nStatement") +
   ggtitle("To what extent do you agree with these value statements?") +
   coord_cartesian(ylim = c(1, 5)) +
-  stat_summary(fun.y=mean, colour="red4", geom="point", 
+  stat_summary(fun.y=mean, colour="orangered", geom="point", 
                shape=18, size=2)  
 
 val_st_vio

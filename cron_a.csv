@@ -1,5 +1,6 @@
 prompt,alpha
-NEP 5,0.84
-met 4,0.83
-rel 6,0.79
-instr 3,0.49
+NEP (5),0.84
+metaphor (4),0.83
+relational (6),0.79
+moral (2),0.6
+instrumental (3),0.49

@@ -22,7 +22,7 @@ library(dplyr)
 library(knitr) # tool for making nice tables
 library(tidyr) # data table wrangling tool
 library(broom)
-library(stargazer) # mekes pretty tables
+library(stargazer) # makes pretty tables
 # library(stats) # for PCA
 # library(psych)
 ```
@@ -187,18 +187,6 @@ plot(hc)
 # plot(hc)
 ```
 
-### Correlations
-
-```{r}
-#33 columns, use as matrix
-x <- ev[3:5]
-y <- ev[7:15]
-
-rcorr(as.matrix(ev[3:33]), type = "pearson")
-
-corr1 <- rcorr(as.matrix(ev[3:10]), type = "pearson")
-corr1
-```
 
 ### PCA
 ```{r}
@@ -238,7 +226,8 @@ biplot(fit)
 ```
 
 
-### Cronbach's alpha
+### Cronbach's alpha, see Cronbach Alpha script
+
 ```{r}
 # Apply to NEP scores
 nep <- read.csv("nep.csv")

@@ -24,11 +24,14 @@ ev_mt <- read.csv("ev_mt.csv")
 ### Cronbach's alpha
 Cronbach's alpha for M-Turk value prompt data
 ```{r}
+psych::alpha()
+
 mt_val <- (ev_mt[3:23]) 
 str(mt_val)
 alpha(mt_val, check.keys = TRUE)
 ```
 
+But... when calculating 
 M-Turk NEP data
 ```{r}
 mt_nep <- (ev_mt[3:7]) 
@@ -84,7 +87,7 @@ cron2 <- cron %>%
 
 cron_bar <- ggplot(cron2, aes(x = prompt, y = alpha, fill = prompt)) +
   geom_bar(stat = "identity", width = 0.5) +
-  scale_fill_viridis(discrete=TRUE, option = "viridis") +
+  scale_fill_viridis(discrete=TRUE, option = "plasma") +
   xlab("Type of Prompt") +
   ylab("Cronbach's alpha") +
   ggtitle("Cronbach's alpha for types of statements") +

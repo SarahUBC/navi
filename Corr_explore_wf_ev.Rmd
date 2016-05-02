@@ -15,7 +15,6 @@ Setup
 
 ```{r}
 library(Hmisc) #to run correlations with sig levels
-library(ggplot2) # for great charts
 library(ggthemes) # for pretty themes in ggplot
 library(viridis) # for pretty colors
 library(dplyr)
@@ -24,6 +23,7 @@ library(tidyr) # data table wrangling tool
 library(broom)
 library(stargazer) # makes pretty tables
 library(corrgram)
+library(ggplot2) # for great charts
 # library(stats) # for PCA
 # library(psych)
 ```
@@ -41,10 +41,12 @@ ev_wf <- read.csv("cer_2016_01_08_dem3.csv")
 ```{r}
 corr1 <- rcorr(as.matrix(ev_wf[11:37]), type = "pearson")
 corr1
+
+# corr2 <- rcorr(as.matrix(ev_wf[11:37]), type = "spearman")
+# corr2
 ```
 
 Make it visual
-11:36
 
 ```{r}
 
@@ -52,9 +54,11 @@ corrgram(ev_wf[1:36], order=TRUE, lower.panel=panel.shade,
    upper.panel=panel.pie, text.panel=panel.txt, main="Environmental Values & Wind Farm (PC2/PC1 Order)")
 
 #fun colors
-corrgram(ev_wf[11:36], order=TRUE, lower.panel=panel.shade, 
+cg_yb <- corrgram(ev_wf[11:36], order=TRUE, lower.panel=panel.shade, 
    upper.panel=panel.pie, text.panel=panel.txt, col.regions = colorRampPalette(c("purple4", "skyblue1", "khaki1", "gold1")), main="Environmental Values & Wind Farm (PC2/PC1 Order)")
 
-#ggsave("corrgram_wf.pdf")
+cg_yb
+#ggsave(cg_yb, file = "/Users/sarahklain/Documents/R_2015/navi/corr_figs/cg_y_b.pdf")
+#pdf(file = "/Users/sarahklain/Documents/R_2015/navi/corr_figs/cg_y_b.pdf")
 ```
 

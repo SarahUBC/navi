@@ -18,6 +18,8 @@ ev_mt <- read.csv("ev_mt.csv")
 Cronbach's alpha for M-Turk value prompt data
 
 ```r
+#psych::alpha()
+
 mt_val <- (ev_mt[3:23]) 
 str(mt_val)
 ```
@@ -140,6 +142,7 @@ alpha(mt_val, check.keys = TRUE)
 ## other_met     0.02 0.04 0.20 0.35 0.40 0.00
 ```
 
+But... when calculating 
 M-Turk NEP data
 
 ```r
@@ -378,7 +381,7 @@ str(mt_ins1)
 ```
 ## 'data.frame':	400 obs. of  2 variables:
 ##  $ decade_mor: int  4 2 3 1 2 5 2 2 2 1 ...
-##  $ right     : int  4 1 4 1 2 1 1 2 1 1 ...
+##  $ right_mor : int  4 1 4 1 2 1 1 2 1 1 ...
 ```
 
 ```r
@@ -399,19 +402,19 @@ alpha(mt_ins, check.keys = TRUE)
 ##  Reliability if an item is dropped:
 ##            raw_alpha std.alpha G6(smc) average_r  S/N alpha se
 ## decade_mor      0.27      0.27    0.16      0.16 0.37    0.096
-## right           0.24      0.24    0.13      0.13 0.31    0.096
+## right_mor       0.24      0.24    0.13      0.13 0.31    0.096
 ## tech            0.81      0.81    0.68      0.68 4.25    0.067
 ## 
 ##  Item statistics 
 ##              n raw.r std.r r.cor r.drop mean   sd
 ## decade_mor 400  0.84  0.82  0.75   0.55  2.1 1.02
-## right      398  0.84  0.83  0.77   0.58  2.0 0.99
+## right_mor  398  0.84  0.83  0.77   0.58  2.0 0.99
 ## tech       400  0.55  0.58  0.19   0.16  3.5 0.90
 ## 
 ## Non missing response frequency for each item
 ##               1    2    3    4    5 miss
 ## decade_mor 0.30 0.39 0.18 0.12 0.01 0.00
-## right      0.36 0.39 0.14 0.09 0.01 0.01
+## right_mor  0.36 0.39 0.14 0.09 0.01 0.01
 ## tech       0.02 0.12 0.34 0.41 0.12 0.00
 ```
 
@@ -455,14 +458,7 @@ library(dplyr)
 
 ```r
 cr <- read.csv("cron_a.csv")
-```
 
-```
-## Warning in read.table(file = file, header = header, sep = sep, quote =
-## quote, : incomplete final line found by readTableHeader on 'cron_a.csv'
-```
-
-```r
 cron <- cr %>% 
   tbl_df
 
@@ -472,7 +468,7 @@ cron2 <- cron %>%
 
 cron_bar <- ggplot(cron2, aes(x = prompt, y = alpha, fill = prompt)) +
   geom_bar(stat = "identity", width = 0.5) +
-  scale_fill_viridis(discrete=TRUE, option = "viridis") +
+  scale_fill_viridis(discrete=TRUE, option = "plasma") +
   xlab("Type of Prompt") +
   ylab("Cronbach's alpha") +
   ggtitle("Cronbach's alpha for types of statements") +

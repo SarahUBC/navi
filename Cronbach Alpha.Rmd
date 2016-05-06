@@ -24,7 +24,7 @@ ev_mt <- read.csv("ev_mt.csv")
 ### Cronbach's alpha
 Cronbach's alpha for M-Turk value prompt data
 ```{r}
-psych::alpha()
+#psych::alpha()
 
 mt_val <- (ev_mt[3:23]) 
 str(mt_val)

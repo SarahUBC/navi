@@ -1,0 +1,164 @@
+---
+title: "MT_T_F_value_statements"
+author: "Sarah Klain"
+date: "May 13, 2016"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Setup
+
+```{r}
+library(Hmisc) #to run correlations with sig levels
+library(ggplot2) # for great charts
+library(ggthemes) # for pretty themes in ggplot
+library(viridis) # for pretty colors
+library(dplyr)
+library(knitr) # tool for making nice tables
+library(tidyr) # data table wrangling tool
+library(broom)
+library(stargazer) # makes pretty tables
+# library(stats) # for PCA
+# library(psych)
+```
+
+### All statements, all populations
+
+Input data
+```{r}
+setwd("/Users/sarahklain/Documents/R_2015/navi") #set working directory
+ev <- read.csv("Env_Val_02_29_2016.csv")
+#str(ev)
+#head(ev)
+```
+
+Bring into dplyr
+
+```{r}
+#Env values long form
+evl <- tidyr::gather(ev, "val_state", "response", 3:33) #short form to long form data for ease in analysis
+
+#bring into dplyr for ease in extracting one sub-population
+evtab <- evl %>%
+  tbl_df
+
+# str(evl)
+# head(evl)
+View(evtab)
+```
+
+Add new column to group data by env value type
+
+```{r}
+ev_nep <- evtab %>% 
+  filter(val_state == "abuse_nep" | val_state == "bal_r_nep" | val_state == "crisis_r_nep" | val_state == "spaceship_nep" | val_state == "bau_nep") %>% 
+  mutate(v_type = "NEP")
+
+ev_inst <- evtab %>% 
+  filter(val_state == "extract_r_ins" | val_state == "clean_inst" | val_state == "loss_r_ins") %>% 
+  mutate(v_type = "inst")
+
+ev_rel <- evtab %>% 
+  filter(val_state == "comm_rel" | val_state == "iden_rel" | val_state == "kin_rel" | val_state == "wild_rel" | val_state == "health_rel2" | val_state == "other_rel" ) %>% 
+  mutate(v_type = "rel")
+
+ev_met <- evtab %>% 
+  filter(val_state == "kin_met" | val_state == "resp_met" | val_state == "iden_met" | val_state == "other_met") %>% 
+  mutate(v_type = "met")
+
+ev_mor <- evtab %>% 
+  filter(val_state == "decade_r_mor" | val_state == "right_r_mor") %>% 
+  mutate(v_type = "moral")
+
+# View(ev_met)
+eval_t2 <- bind_rows(ev_nep, ev_inst, ev_rel, ev_met, ev_mor)
+str(eval_t2)
+summary(eval_t2)
+
+eval_t3 <- eval_t2 %>% 
+  filter(response > 0)
+```
+
+Violin plot
+```{r}
+
+val_st_vio <- ggplot(eval_t3, aes(x = val_state, y = response, fill = v_type)) +
+ geom_violin(adjust=0.3) +
+  xlab("Statement") + ylab("Response\n1= stongly disagree; 5 = strongly agree") +
+  scale_fill_viridis(discrete=TRUE, "Category of Value\nStatement") +
+  ggtitle("To what extent do you agree with these value statements?") +
+  coord_cartesian(ylim = c(1, 5)) +
+  stat_summary(fun.y=mean, colour="orangered", geom="point", 
+               shape=18, size=2)  
+
+val_st_vio
+```
+
+Faceted Violin plot by sub-pop
+```{r}
+val_st_vio_sp <- ggplot(eval_t3, aes(x = val_state, y = response, fill = v_type)) +
+ geom_violin(adjust=0.3) +
+  xlab("Statement") + ylab("Response\n1= stongly disagree; 5 = strongly agree") +
+  scale_fill_viridis(discrete=TRUE, "Category of Value\nStatement") +
+  ggtitle("To what extent do you agree with these value statements?") +
+  coord_cartesian(ylim = c(1, 5)) +
+  stat_summary(fun.y=mean, colour="orangered", geom="point", 
+               shape=18, size=2)  +
+  facet_grid(~ sub_pop)
+
+val_st_vio_sp
+```
+
+Faceted Violin plot by sub-pop, rel and NEP
+```{r}
+eval_t4 <- eval_t3 %>% 
+  filter(v_type != "met") %>% 
+  filter(v_type != "moral") %>% 
+  filter(v_type != "inst")
+#View(eval_t4)
+
+val_st_vio_sp2 <- ggplot(eval_t4, aes(x = val_state, y = response, fill = v_type)) +
+ geom_violin(adjust=0.3) +
+  xlab("Statement") + ylab("Response\n1= stongly disagree; 5 = strongly agree") +
+  scale_fill_viridis(discrete=TRUE, "Category of Value\nStatement") +
+  ggtitle("To what extent do you agree with these value statements?") +
+  coord_cartesian(ylim = c(1, 5)) +
+  stat_summary(fun.y=mean, colour="orangered", geom="point", 
+               shape=18, size=2)  +
+  facet_grid(sub_pop~.)
+
+val_st_vio_sp2
+```
+
+Bar plot, all value statements
+
+```{r}
+eval_t3$val_state <- factor(eval_t3$val_state, levels=c("extract_r_ins" ,"loss_r_ins","clean_inst","kin_met", "resp_met", "iden_met","other_met", "decade_r_mor","right_r_mor", "abuse_nep", "bal_r_nep", "crisis_r_nep", "spaceship_nep", "bau_nep", "comm_rel", "wild_rel", "iden_rel", "kin_rel", "health_rel2", "other_rel"))
+
+bar_all <- ggplot(eval_t3, aes(x = response, fill = v_type)) +
+  geom_histogram(binwidth = 0.5) +
+  scale_fill_viridis(discrete=TRUE, option = "viridis") +
+  xlab("Response\n1 = Strongly Disagree; 2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  ggtitle("To what extent do you agree with these statements?") +
+  coord_cartesian(xlim = c(1, 5)) +
+  facet_grid(~ val_state)
+
+bar_all
+
+bar_all2 <- ggplot(eval_t3, aes(x = response, fill = v_type)) +
+  geom_histogram(binwidth = 0.5) +
+  scale_fill_viridis(discrete=TRUE, option = "viridis") +
+  xlab("Response\n1 = Strongly Disagree; 2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  ggtitle("To what extent do you agree with these statements?") +
+  coord_cartesian(xlim = c(1, 5)) +
+  facet_grid(sub_pop ~ val_state)
+
+bar_all2
+#ggsave(bar_all, file="/Users/sarahklain/Documents/R_2015/env_val/figs/bar_all.pdf")
+```
+

@@ -293,3 +293,57 @@ bar_all2
 #ggsave(bar_all, file="/Users/sarahklain/Documents/R_2015/env_val/figs/bar_all.pdf")
 ```
 
+
+Vio plot with means, NEP and rel
+
+
+```r
+val_st_vio_sp_mean <- ggplot(eval_t4, aes(x = v_type, y = response, fill = v_type)) +
+ geom_violin(adjust=0.3) +
+  xlab("Statement") + ylab("Response\n1 = Strongly Disagree; 2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  scale_fill_viridis(discrete=TRUE, "Category of Value\nStatement") +
+  ggtitle("To what extent do you agree with these value statements?") +
+  coord_cartesian(ylim = c(1, 5)) +
+  stat_summary(fun.y=mean, colour="orangered", geom="point", 
+               shape=10, size=5)  +
+  facet_grid(~ sub_pop)
+
+val_st_vio_sp_mean
+```
+
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-9-1.png) 
+
+```r
+ggsave(val_st_vio_sp_mean, file="/Users/sarahklain/Documents/R_2015/navi/figs/val_st_vio_sp_mean.jpg")
+```
+
+```
+## Saving 7 x 5 in image
+```
+
+with other value types
+
+```r
+val_st_vio_mean <- ggplot(eval_t3, aes(x = v_type, y = response, fill = v_type)) +
+ geom_violin(adjust=0.3) +
+  xlab("Statement") + ylab("Response\n1 = Strongly Disagree; 2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  scale_fill_viridis(discrete=TRUE, "Category of Value\nStatement") +
+  ggtitle("To what extent do you agree with these value statements?") +
+  coord_cartesian(ylim = c(1, 5)) +
+  stat_summary(fun.y=mean, colour="orangered", geom="point", 
+               shape=10, size=5)  +
+  facet_grid(~ sub_pop)
+
+val_st_vio_mean
+```
+
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-10-1.png) 
+
+```r
+ggsave(val_st_vio_mean, file="/Users/sarahklain/Documents/R_2015/navi/figs/val_st_vio_mean.jpg")
+```
+
+```
+## Saving 7 x 5 in image
+```
+

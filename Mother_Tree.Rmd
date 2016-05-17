@@ -35,44 +35,18 @@ library(psych) # for PCA
 setwd("/Users/sarahklain/Documents/R_2015/navi") #set working directory
 #ev <- read.csv("Env_Val_02_29_2016.csv")
 
-ev <- read.csv("ev_mt_f_t_no_R.csv")
-ev1 <- (ev[3:11])
+ev <- read.csv("Env_Val_05_13_2016.csv")
+ev1 <- (ev[3:13])
 
 ev_mt <- read.csv("ev_mt.csv")
-```
 
-### Cronbach's alpha
-```{r}
-# Cronbach's alpha for relational and NEP variables
-alpha(ev1, check.keys = TRUE)
 
-# Cronbach's alpha for only NEP variables
-nep <- read.csv("nep.csv")
-alpha(nep)
-
-#Cronbach's alpha for M-Turk value prompt data
-mt_val <- (ev_mt[3:23]) 
-str(mt_val)
-alpha(mt_val, check.keys = TRUE)
 ```
 
 ### PCA
 
-```{r}
-fit_ev_mt <- prcomp(~ ., data=mt_val, na.action=na.omit, scale=TRUE)
-
-summary(fit_ev_mt) # print variance accounted for 
-loadings(fit_ev_mt) # pc loadings 
-plot(fit_ev_mt,type="lines") # scree plot 
-fit_ev_mt$scores # the principal components
-biplot(fit_ev_mt)
-# how do I interpret this?
-# how do I account for demographic features?
-```
-
-```{r}
 # data from all three surveys: mt, t and f
-
+```{r}
 fit_ev <- prcomp(~ ., data = ev1, na.action = na.omit, scale=TRUE)
 
 fit_ev
@@ -83,8 +57,6 @@ plot(fit_ev,type="lines") # scree plot
 fit_ev$scores # the principal components
 biplot(fit_ev)
 ```
-
-
 
 ```{r}
 library(devtools) # for nice plots of PCAs
@@ -99,8 +71,31 @@ g <- g + theme(legend.direction = 'horizontal',
 print(g)
 ```
  
-###PCA with MT data
+ M-turk data
+```{r}
+library(dplyr)
+ev_tbl <- ev %>% 
+  tbl_df
 
+ev_mt_tbl <- ev_tbl %>% 
+  filter(sub_pop == "MT")
+
+fit_ev_mt <- prcomp(~ ., data=ev_mt_tbl[3,24], na.action=na.omit, scale=TRUE)
+
+summary(fit_ev_mt) # print variance accounted for 
+loadings(fit_ev_mt) # pc loadings 
+plot(fit_ev_mt,type="lines") # scree plot 
+fit_ev_mt$scores # the principal components
+biplot(fit_ev_mt)
+
+
+#remove metaphor data
+
+
+
+```
+ 
+###PCA with MT data
 ```{r}
 gmt <- ggbiplot(fit_ev_mt, obs.scale = 1, var.scale = 1, 
               ellipse = TRUE, 
@@ -111,6 +106,14 @@ gmt <- gmt + theme(legend.direction = 'horizontal',
 print(gmt)
 
 ```
+
+```{r}
+library(dplyr)
+
+```
+
+
+
  ### Factor Analysis
 
  # factanal(x, factors, data = NULL, covmat = NULL, n.obs = NA,
@@ -266,3 +269,5 @@ t_om_rm
 head(mt_val)
 
 ```
+
+

@@ -196,3 +196,30 @@ val_st_vio_mean
 ggsave(val_st_vio_mean, file="/Users/sarahklain/Documents/R_2015/navi/figs/val_st_vio_mean.jpg")
 ```
 
+```{r}
+all_m <- read.csv("all_means.csv")
+all_m_t <- all_m %>%
+  tbl_df
+
+all_m2 <- all_m_t %>%
+  filter(v_type != "met") %>% 
+  filter(v_type != "other") %>%
+  filter(ave > 0) %>% 
+  mutate(value = reorder(value, ave)) %>% 
+  arrange(ave)
+
+#cron2 <- cron %>% 
+#  mutate(prompt = reorder(prompt, alpha)) %>% 
+#  arrange(alpha)
+
+bar_means <- ggplot(all_m2, aes(x = value, y = ave, fill = v_type)) +
+  geom_bar(stat = "identity") +
+  scale_fill_viridis(discrete=TRUE, option = "viridis", name = "Type of\nValue Prompt") +
+  xlab("Social-Ecological Value Prompt") +
+  ylab("Response\n1 = Strongly Disagree; 2 = Disagree;\n3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") + 
+  ggtitle("Mean Response to Value Prompts") 
+
+bar_means
+
+```
+

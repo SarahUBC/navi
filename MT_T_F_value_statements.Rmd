@@ -114,6 +114,21 @@ val_st_vio_sp <- ggplot(eval_t3, aes(x = val_state, y = response, fill = v_type)
 val_st_vio_sp
 ```
 
+Faceted Violin plot by sub-pop for all prompts
+```{r}
+val_st_vio_sp <- ggplot(eval_t3, aes(x = val_state, y = response, fill = v_type)) +
+ geom_violin(adjust=0.3) +
+  xlab("Statement") + ylab("Response\n1= stongly disagree; 5 = strongly agree") +
+  scale_fill_viridis(discrete=TRUE, "Category of Value\nStatement") +
+  ggtitle("To what extent do you agree with these value statements?") +
+  coord_cartesian(ylim = c(1, 5)) +
+  stat_summary(fun.y=mean, colour="orangered", geom="point", 
+               shape=18, size=2)  +
+  facet_grid(sub_pop ~.)
+
+val_st_vio_sp
+```
+
 Faceted Violin plot by sub-pop, rel and NEP
 ```{r}
 eval_t4 <- eval_t3 %>% 
@@ -221,5 +236,57 @@ bar_means <- ggplot(all_m2, aes(x = value, y = ave, fill = v_type)) +
 
 bar_means
 
+```
+
+```{r}
+foo <- eval_t3 %>% 
+  group_by(sub_pop, val_state) %>% 
+  do(resp_mean = mean(response))
+
+foo
+
+str(eval_t3)
+
+gtbl %>%
+  group_by(continent) %>%
+  summarize(avg_lifeExp = mean(lifeExp))
+```
+
+
+```{r}
+foo2 <- ggplot(eval_t4, aes(x = val_state, y = response, fill = v_type)) +
+ #geom_violin(adjust=0.3) +
+  xlab("Statement") + ylab("Response\n1= stongly disagree; 5 = strongly agree") +
+  scale_fill_viridis(discrete=TRUE, "Category of Value\nStatement") +
+  ggtitle("To what extent do you agree with these value statements?") +
+  coord_cartesian(ylim = c(1, 5)) +
+  stat_summary(fun.y=mean, colour="orangered", geom="point", 
+               shape=18, size=2)  +
+  facet_grid(sub_pop~.)
+
+foo2
+```
+
+```{r}
+m3p <- read.csv("means_3pop.csv")
+
+m3p$value <- factor(m3p$value, levels=c("clean_inst", "other_rel","abuse_nep", "other_met", "comm_rel", "right_r_mor", "kin_rel", "resp_met", "crisis_r_nep", "resp_rel", "bau_nep", "spaceship_nep", "decade_r_mor", "iden_rel", "bal_r_nep", "loss_r_ins", "health_rel2", "wild_rel", "kin_met", "iden_met", "extract_r_ins", "tech_r"))
+
+m3pt <- m3p %>% 
+  tbl_df %>% 
+  filter(type1 != "Metaphor") %>% 
+  filter(type1 != "Other") # %>% 
+  #mutate(value = reorder(value, mean_resp)) %>% 
+  #arrange(value)
+
+bar_mean_3 <- ggplot(m3pt, aes(x = value, y = mean_resp, fill = type2)) +
+  geom_bar(stat = "identity") +
+  scale_fill_viridis(discrete=TRUE, option = "viridis", name = "Type of\nValue Prompt") +
+  xlab("Social-Ecological Value Prompt") +
+  ylab("Response\n1 = Strongly Disagree; 2 = Disagree;\n3 = Neither Agree nor Disagree;4 = Agree; 5 = Strongly Agree") + 
+  ggtitle("Mean Response to Value Prompts") +
+  facet_grid(sub_pop~.)
+
+bar_mean_3
 ```
 

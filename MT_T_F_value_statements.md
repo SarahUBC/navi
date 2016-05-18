@@ -232,6 +232,24 @@ val_st_vio_sp
 
 ![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-6-1.png) 
 
+Faceted Violin plot by sub-pop for all prompts
+
+```r
+val_st_vio_sp <- ggplot(eval_t3, aes(x = val_state, y = response, fill = v_type)) +
+ geom_violin(adjust=0.3) +
+  xlab("Statement") + ylab("Response\n1= stongly disagree; 5 = strongly agree") +
+  scale_fill_viridis(discrete=TRUE, "Category of Value\nStatement") +
+  ggtitle("To what extent do you agree with these value statements?") +
+  coord_cartesian(ylim = c(1, 5)) +
+  stat_summary(fun.y=mean, colour="orangered", geom="point", 
+               shape=18, size=2)  +
+  facet_grid(sub_pop ~.)
+
+val_st_vio_sp
+```
+
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-7-1.png) 
+
 Faceted Violin plot by sub-pop, rel and NEP
 
 ```r
@@ -254,7 +272,7 @@ val_st_vio_sp2 <- ggplot(eval_t4, aes(x = val_state, y = response, fill = v_type
 val_st_vio_sp2
 ```
 
-![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-7-1.png) 
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-8-1.png) 
 
 Bar plot, all value statements
 
@@ -273,7 +291,7 @@ bar_all <- ggplot(eval_t3, aes(x = response, fill = v_type)) +
 bar_all
 ```
 
-![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-8-1.png) 
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-9-1.png) 
 
 ```r
 bar_all2 <- ggplot(eval_t3, aes(x = response, fill = v_type)) +
@@ -287,7 +305,7 @@ bar_all2 <- ggplot(eval_t3, aes(x = response, fill = v_type)) +
 bar_all2
 ```
 
-![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-8-2.png) 
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-9-2.png) 
 
 ```r
 #ggsave(bar_all, file="/Users/sarahklain/Documents/R_2015/env_val/figs/bar_all.pdf")
@@ -311,7 +329,7 @@ val_st_vio_sp_mean <- ggplot(eval_t4, aes(x = v_type, y = response, fill = v_typ
 val_st_vio_sp_mean
 ```
 
-![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-9-1.png) 
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-10-1.png) 
 
 ```r
 ggsave(val_st_vio_sp_mean, file="/Users/sarahklain/Documents/R_2015/navi/figs/val_st_vio_sp_mean.jpg")
@@ -337,7 +355,7 @@ val_st_vio_mean <- ggplot(eval_t3, aes(x = v_type, y = response, fill = v_type))
 val_st_vio_mean
 ```
 
-![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-10-1.png) 
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-11-1.png) 
 
 ```r
 ggsave(val_st_vio_mean, file="/Users/sarahklain/Documents/R_2015/navi/figs/val_st_vio_mean.jpg")
@@ -346,4 +364,86 @@ ggsave(val_st_vio_mean, file="/Users/sarahklain/Documents/R_2015/navi/figs/val_s
 ```
 ## Saving 7 x 5 in image
 ```
+
+
+```r
+all_m <- read.csv("all_means.csv")
+all_m_t <- all_m %>%
+  tbl_df
+
+all_m2 <- all_m_t %>%
+  filter(v_type != "met") %>% 
+  filter(v_type != "other") %>%
+  filter(ave > 0) %>% 
+  mutate(value = reorder(value, ave)) %>% 
+  arrange(ave)
+
+#cron2 <- cron %>% 
+#  mutate(prompt = reorder(prompt, alpha)) %>% 
+#  arrange(alpha)
+
+bar_means <- ggplot(all_m2, aes(x = value, y = ave, fill = v_type)) +
+  geom_bar(stat = "identity") +
+  scale_fill_viridis(discrete=TRUE, option = "viridis", name = "Type of\nValue Prompt") +
+  xlab("Social-Ecological Value Prompt") +
+  ylab("Response\n1 = Strongly Disagree; 2 = Disagree;\n3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") + 
+  ggtitle("Mean Response to Value Prompts") 
+
+bar_means
+```
+
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-12-1.png) 
+
+
+
+```r
+m3p <- read.csv("means_3pop.csv")
+
+#sort by mturk responses
+
+m3p$value <- factor(m3p$value, levels=c("clean", "other","abuse", "other", "comm", "right", "kin", "resp", "crisis", "resp", "bau", "spaceship", "decade", "iden", "bal", "loss", "health", "wild", "kin_m", "iden_m", "extract", "tech"))
+```
+
+```
+## Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
+## else paste0(labels, : duplicated levels in factors are deprecated
+```
+
+```r
+#sort by tourist responses
+#m3p$value <- factor(m3p$value, levels=c("other_m", "iden_m", "resp_m", "kin_m", "clean",	"other",	"resp",	"right",	"comm",	"health",	"iden",	"decade",	"abuse",	"kin",	"bal",	"loss",	"wild",	"crisis",	"bau",	"spaceship",	"tech",	"extract,"))
+
+m3pt <- m3p %>% 
+  tbl_df %>% 
+  filter(type1 != "Metaphor") %>% 
+  filter(type1 != "Other") # %>% 
+  #mutate(value = reorder(value, mean_resp)) %>% 
+  #arrange(value)
+
+bar_mean_3 <- ggplot(m3pt, aes(x = value, y = mean_resp, fill = type2)) +
+  geom_bar(stat = "identity", width = 0.75) +
+  scale_fill_viridis(discrete=TRUE, option = "viridis", name = "Type of\nValue Prompt") +
+  xlab("Social-Ecological Value Prompt") +
+  ylab("Response\n1 = Strongly Disagree; 2 = Disagree;\n3 = Neither Agree nor Disagree;4 = Agree; 5 = Strongly Agree") + 
+  ggtitle("Mean Response to Value Prompts") +
+  facet_grid(sub_pop~.)
+
+bar_mean_3
+```
+
+```
+## Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
+## else paste0(labels, : duplicated levels in factors are deprecated
+```
+
+```
+## Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
+## else paste0(labels, : duplicated levels in factors are deprecated
+```
+
+```
+## Warning: Removed 8 rows containing missing values (position_stack).
+```
+
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-13-1.png) 
 

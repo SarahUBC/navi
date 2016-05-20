@@ -1,0 +1,285 @@
+---
+title: "PCA and FA and t-test"
+author: "Sarah Klain"
+date: "May 19, 2016"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+---
+title: "Env_val"
+author: "Sarah Klain"
+date: "March 6, 2016"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+![alt text](Pandora8.jpg)
+## PCA & Factor Analysis
+
+#### Setup
+
+```{r}
+library(Hmisc) #to run correlations with sig levels
+ library(ggplot2) # for great charts
+# library(ggthemes) # for pretty themes in ggplot
+library(viridis) # for pretty colors
+ suppressMessages(library(dplyr))
+library(knitr) # tool for making nice tables
+# library(tidyr) # data table wrangling tool
+# library(broom)
+# library(stargazer) # mekes pretty tables
+library(stats) # for PCA & FA
+library(psych) # for PCA
+#library(dplyr)
+```
+
+#### Input data
+```{r}
+setwd("/Users/sarahklain/Documents/R_2015/navi") #set working directory
+#ev <- read.csv("Env_Val_02_29_2016.csv")
+
+ev <- read.csv("Env_Val_05_13_2016.csv")
+ev1 <- (ev[3:13])
+
+ev_mt <- read.csv("ev_mt.csv")
+
+
+```
+
+### PCA
+
+# data from all three surveys: mt, t and f
+```{r}
+fit_ev <- prcomp(~ ., data = ev1, na.action = na.omit, scale=TRUE)
+
+fit_ev
+
+summary(fit_ev) # print variance accounted for 
+loadings(fit_ev) # pc loadings 
+plot(fit_ev,type="lines") # scree plot 
+fit_ev$scores # the principal components
+biplot(fit_ev)
+```
+
+```{r}
+library(devtools) # for nice plots of PCAs
+# install_github("ggbiplot", "vqv")
+library(ggbiplot)
+g <- ggbiplot(fit_ev, obs.scale = 1, var.scale = 1, 
+              ellipse = TRUE, 
+              circle = TRUE)
+g <- g + scale_color_discrete(name = '')
+g <- g + theme(legend.direction = 'horizontal', 
+               legend.position = 'top')
+print(g)
+```
+ 
+ M-turk data
+```{r}
+library(dplyr)
+ev_tbl <- ev %>% 
+  tbl_df
+
+ev_mt_tbl <- ev_tbl %>% 
+  filter(sub_pop == "MT")
+
+fit_ev_mt <- prcomp(~ ., data=ev_mt_tbl[3,24], na.action=na.omit, scale=TRUE)
+
+summary(fit_ev_mt) # print variance accounted for 
+loadings(fit_ev_mt) # pc loadings 
+plot(fit_ev_mt,type="lines") # scree plot 
+fit_ev_mt$scores # the principal components
+biplot(fit_ev_mt)
+
+
+#remove metaphor data
+
+
+
+```
+ 
+###PCA with MT data
+```{r}
+gmt <- ggbiplot(fit_ev_mt, obs.scale = 1, var.scale = 1, 
+              ellipse = TRUE, 
+              circle = TRUE)
+gmt <- gmt + scale_color_discrete(name = '')
+gmt <- gmt + theme(legend.direction = 'horizontal', 
+               legend.position = 'top')
+print(gmt)
+
+```
+
+```{r}
+library(dplyr)
+
+```
+
+
+
+ ### Factor Analysis
+
+ # factanal(x, factors, data = NULL, covmat = NULL, n.obs = NA,
+ #        subset, na.action, start = NULL,
+ #        scores = c("none", "regression", "Bartlett"),
+ #        rotation = "varimax", control = NULL, ...)
+ 
+ ## FA for M-Turk Data
+
+```{r}
+fit_mt <- factanal(~ ., factors = 7, data = mt_val)
+print(fit_mt, digits=2, cutoff=.3, sort=TRUE)
+# plot factor 1 by factor 2 
+load <- fit_mt$loadings[,1:2] 
+plot(load,type="n") # set up plot 
+text(load,labels=names(mt_val),cex=.7) # add variable names
+```
+
+```{r}
+fit_mt <- factanal(~ ., factors = 5, data = mt_val)
+print(fit_mt, digits=2, cutoff=.3, sort=TRUE)
+# plot factor 1 by factor 2 
+load <- fit_mt$loadings[,1:2] 
+plot(load,type="n") # set up plot 
+text(load,labels=names(mt_val),cex=.7) # add variable names
+```
+
+```{r}
+fit_mt <- factanal(~ ., factors = 4, data = mt_val)
+print(fit_mt, digits=2, cutoff=.3, sort=TRUE)
+# plot factor 1 by factor 2 
+load <- fit_mt$loadings[,1:2] 
+plot(load,type="n") # set up plot 
+text(load,labels=names(mt_val),cex=.8) # add variable names
+```
+
+```{r}
+fit_mt <- factanal(~ ., factors = 3, data = mt_val)
+print(fit_mt, digits=2, cutoff=.3, sort=TRUE)
+# plot factor 1 by factor 2 
+load <- fit_mt$loadings[,1:2] 
+plot(load,type="n") # set up plot 
+text(load,labels=names(mt_val),cex=.7) # add variable names
+```
+
+```{r}
+fit_mt <- factanal(~ ., factors = 2, data = mt_val)
+print(fit_mt, digits=2, cutoff=.3, sort=TRUE)
+# plot factor 1 by factor 2 
+load <- fit_mt$loadings[,1:2] 
+plot(load,type="n") # set up plot 
+text(load,labels=names(mt_val),cex=.7) # add variable names
+```
+
+```{r}
+fit_ev <- factanal(~ ., factors = 3, data = ev1)
+print(fit_ev, digits=2, cutoff=.3, sort=TRUE)
+# plot factor 1 by factor 2 
+load <- fit_ev$loadings[,1:2] 
+plot(load,type="n") # set up plot 
+text(load,labels=names(ev1),cex=.7) # add variable names
+```
+
+## FA for all three surveys pooled
+```{r}
+fit_ev <- factanal(~ ., factors = 4, data = ev1)
+print(fit_ev, digits=2, cutoff=.3, sort=TRUE)
+# plot factor 1 by factor 2 
+load <- fit_ev$loadings[,1:2] 
+plot(load,type="n") # set up plot 
+text(load,labels=names(ev1),cex=.7) # add variable names
+```
+
+### Average agreement with each prompt
+ Average2 = reverse coded prompts are reversed
+
+```{r}
+a_mt_val <- read.csv("ave_ev_mt.csv")
+
+a_mt_tbl <- a_mt_val %>% 
+  tbl_df
+
+
+a_mt_tbl2 <- a_mt_tbl %>% 
+  mutate(Prompt = reorder(Prompt, Average2)) %>% 
+  arrange(Average2)
+
+a_mt_tbl2
+
+a_mt_bar <- ggplot(a_mt_tbl2, aes(x = Prompt, y = Average2, fill = Prompt)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  scale_fill_viridis(discrete=TRUE, option = "viridis") +
+  xlab("Value Prompt") +
+  ylab("Mean Response") +
+  ggtitle("Mean response to prompts\nTo what extent do you agree with these statements?") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position="none") 
+  #coord_cartesian(xlim = c(1, 5)) 
+
+a_mt_bar
+
+ggsave ("a_mt_bar.pdf", width = 9, height = 4)
+```
+
+## T-tests
+Compare value framings
+
+```{r}
+t_kr_km <- t.test(mt_val$kin_rel,mt_val$kin_met, paired = TRUE)
+t_kr_km 
+
+t_or_om <- t.test(mt_val$other_rel, mt_val$other_met, paired = TRUE)
+t_or_om
+
+#less agreement with metaphor, more agreement with relational statements
+```
+
+
+
+
+```{r}
+t_resp <- t.test(mt_val$res,mt_val$iden,paired=TRUE)
+
+summary(mt_val$kin_rel)
+summary(mt_val$kin_met)
+
+t_or_ci <- t.test(mt_val$other_rel,mt_val$clean_inst,paired=TRUE)
+t_or_ci
+
+t_kr_rm <- t.test(mt_val$kin_rel, mt_val$resp_met, paired = TRUE)
+t_kr_rm
+
+t_cr_rm <- t.test(mt_val$comm_rel, mt_val$resp_met, paired = TRUE)
+t_cr_rm
+
+t_hr_wr <- t.test(mt_val$health_rel, mt_val$wild_rel, paired = TRUE)
+t_hr_wr
+
+t_cr_bn <- t.test(mt_val$comm_rel, mt_val$bau_nep, paired = TRUE)
+t_cr_bn
+
+t_ir_bn <- t.test(mt_val$iden_rel, mt_val$health_rel, paired = TRUE)
+t_ir_bn
+
+t_ir_wr <- t.test(mt_val$iden_rel, mt_val$wild_rel, paired = TRUE)
+t_ir_wr
+
+t_om_wr <- t.test(mt_val$other_met, mt_val$wild_rel, paired = TRUE)
+t_om_wr
+
+t_om_rm <- t.test(mt_val$other_met, mt_val$resp_met, paired = TRUE)
+t_om_rm
+
+head(mt_val)
+
+```
+

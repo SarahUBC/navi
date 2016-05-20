@@ -189,6 +189,8 @@ plot(hc)
 
 
 ### PCA
+see PCA script
+
 ```{r}
 # apply PCA - scale. = TRUE is highly 
 # advisable, but default is FALSE. 

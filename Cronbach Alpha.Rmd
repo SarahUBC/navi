@@ -13,18 +13,63 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r}
-library(stats) # for PCA & FA
-library(psych) # for PCA
+library(stats) # for Cronbach alpha
+library(psych) # for Cronbach alpha
 
 setwd("/Users/sarahklain/Documents/R_2015/navi")
+```
+
+```{r}
+ev <- read.csv("Env_Val_05_19_2016.csv")
+ev1 <- (ev[3:19])
+
 ev_mt <- read.csv("ev_mt.csv")
 
 ```
 
 ### Cronbach's alpha
+for pooled data
+```{r}
+alpha(ev1, check.keys = TRUE)
+```
+
+farmers
+```{r}
+farm <- ev[which(ev$sub_pop =='Farmer'), ]
+farm2 <- farm[3:19]
+alpha(farm2, check.keys = TRUE)
+```
+
+tourists
+```{r}
+tour <- ev[which(ev$sub_pop =='Tourist'), ]
+alpha(tour, check.keys = TRUE)
+```
+
+M-Turk
+```{r}
+mt <- ev[which(ev$sub_pop =='M-Turk'), ]
+alpha(mt, check.keys = TRUE)
+```
+
+
+
+
+
+
+
+But... when calculating 
+M-Turk NEP data
+```{r}
+mt_nep <- (ev_mt[3:7]) 
+str(mt_nep)
+alpha(mt_nep, check.keys = TRUE)
+```
+
+
 Cronbach's alpha for M-Turk value prompt data
 ```{r}
-#psych::alpha()
+psych::alpha()
 
 mt_val <- (ev_mt[3:23]) 
 str(mt_val)

@@ -117,6 +117,15 @@ plot(load,type="n") # set up plot
 text(load,labels=names(ev1),cex=.7) # add variable names
 ```
 
+```{r}
+fit_ev <- factanal(~ ., factors = 2, data = ev1)
+print(fit_ev, digits=2, cutoff=.3, sort=TRUE)
+# plot factor 1 by factor 2 
+load <- fit_ev$loadings[,1:2] 
+plot(load,type="n", col = "black") # set up plot 
+text(load,labels=names(ev1),cex=.7, col = "black") # add variable names
+```
+
 
 Determine Number of Factors to Extract
 ```{r}

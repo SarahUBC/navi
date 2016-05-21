@@ -30,33 +30,39 @@ ev_mt <- read.csv("ev_mt.csv")
 ### Cronbach's alpha
 for pooled data
 ```{r}
+alpha(ev, check.keys = TRUE)
 alpha(ev1, check.keys = TRUE)
+alpha(ev[3:7],check.keys = TRUE )
+alpha(ev[8:12],check.keys = TRUE )
 ```
 
 farmers
 ```{r}
 farm <- ev[which(ev$sub_pop =='Farmer'), ]
-farm2 <- farm[3:19]
-alpha(farm2, check.keys = TRUE)
+alpha(farm, check.keys = TRUE)
+alpha(farm[3:7], check.keys = TRUE)
+alpha(farm[8:12],check.keys = TRUE)
 ```
 
 tourists
 ```{r}
 tour <- ev[which(ev$sub_pop =='Tourist'), ]
 alpha(tour, check.keys = TRUE)
+alpha(tour[3:7], check.keys = TRUE)
+alpha(tour[8:12],check.keys = TRUE)
 ```
 
 M-Turk
 ```{r}
 mt <- ev[which(ev$sub_pop =='M-Turk'), ]
 alpha(mt, check.keys = TRUE)
+alpha(mt[3:7], check.keys = TRUE)
+
+#M-Turk relational data
+mt_rel <- read.csv("mt_rel.csv")
+#str(mt_rel)
+alpha(mt_rel, check.keys = TRUE)
 ```
-
-
-
-
-
-
 
 But... when calculating 
 M-Turk NEP data
@@ -87,16 +93,11 @@ alpha(mt_nep, check.keys = TRUE)
 M-Turk metaphor data
 ```{r}
 mt_met <- read.csv("met_mt.csv")
-str(mt_met)
+#str(mt_met)
 alpha(mt_met, check.keys = TRUE)
 ```
 
-M-Turk relational data
-```{r}
-mt_rel <- read.csv("mt_rel.csv")
-str(mt_rel)
-alpha(mt_rel, check.keys = TRUE)
-```
+
 
 M-Turk instrumental data
 ```{r}

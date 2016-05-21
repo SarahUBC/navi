@@ -49,7 +49,7 @@ evtab <- evl %>%
 
 # str(evl)
 # head(evl)
-View(evtab)
+# View(evtab)
 ```
 
 Add new column to group data by env value type
@@ -149,6 +149,44 @@ val_st_vio_sp2 <- ggplot(eval_t4, aes(x = val_state, y = response, fill = v_type
 
 val_st_vio_sp2
 ```
+
+Faceted Violin plot by rel
+```{r}
+
+eval_t5 <- eval_t4 %>% 
+  filter(v_type == "rel")
+
+val_st_vio_sp3 <- ggplot(eval_t5, aes(x = sub_pop, y = response, fill = sub_pop)) +
+ geom_violin(adjust=0.3) +
+  xlab("") + ylab("Response\n1= stongly disagree; 5 = strongly agree") +
+  scale_fill_viridis(discrete=TRUE, "Sample") +
+  ggtitle("Relational Value Statements\nTo what extent do you agree with these statements?") +
+  coord_cartesian(ylim = c(1, 5)) +
+  stat_summary(fun.y=mean, colour="orangered", geom="point", 
+               shape=10, size=3)  +
+  facet_grid(~val_state)
+
+val_st_vio_sp3
+```
+
+NEP
+```{r}
+eval_NEP <- eval_t4 %>% 
+  filter(v_type == "NEP")
+
+val_st_vio_NEP <- ggplot(eval_NEP, aes(x = sub_pop, y = response, fill = sub_pop)) +
+ geom_violin(adjust=0.3) +
+  xlab("") + ylab("Response\n1= stongly disagree; 5 = strongly agree") +
+  scale_fill_viridis(discrete=TRUE, "") +
+  ggtitle("NEP\nTo what extent do you agree with these statements?") +
+  coord_cartesian(ylim = c(1, 5)) +
+  stat_summary(fun.y=mean, colour="orangered", geom="point", 
+               shape=10, size=3)  +
+  facet_grid(~val_state)
+
+val_st_vio_NEP
+```
+
 
 Bar plot, all value statements
 
@@ -267,3 +305,48 @@ bar_mean_3 <- ggplot(m3pt, aes(x = value, y = mean_resp, fill = type2)) +
 bar_mean_3
 ```
 
+calc means for sub pops, relational values
+
+```{r}
+eval_rel_f <- eval_t4 %>% 
+  filter(v_type == "rel") %>% 
+  filter(sub_pop == "Farmer") 
+
+mean(eval_rel_f$response)
+
+eval_rel_mt <- eval_t4 %>% 
+  filter(v_type == "rel") %>% 
+  filter(sub_pop == "M-Turk") 
+
+mean(eval_rel_mt$response)
+
+eval_rel_to <- eval_t4 %>% 
+  filter(v_type == "rel") %>% 
+  filter(sub_pop == "Tourist") 
+
+mean(eval_rel_to$response)
+
+```
+
+calc means for sub pops, NEP
+
+```{r}
+eval_NEP_f <- eval_t4 %>% 
+  filter(v_type == "NEP") %>% 
+  filter(sub_pop == "Farmer") 
+
+mean(eval_NEP_f$response)
+
+eval_NEP_mt <- eval_t4 %>% 
+  filter(v_type == "NEP") %>% 
+  filter(sub_pop == "M-Turk") 
+
+mean(eval_NEP_mt$response)
+
+eval_NEP_to <- eval_t4 %>% 
+  filter(v_type == "NEP") %>% 
+  filter(sub_pop == "Tourist") 
+
+mean(eval_NEP_to$response)
+
+```

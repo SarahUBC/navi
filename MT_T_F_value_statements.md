@@ -444,26 +444,20 @@ m3p <- read.csv("means_3pop.csv")
 
 #sort by mturk responses
 
-m3p$value <- factor(m3p$value, levels=c("clean", "other","abuse", "other", "comm", "right", "kin", "resp", "crisis", "resp", "bau", "spaceship", "decade", "iden", "bal", "loss", "health", "wild", "kin_m", "iden_m", "extract", "tech"))
-```
+m3p$value <- factor(m3p$value, levels=c("clean", "other","resp", "abuse", "other_m", "comm", "right", "kin", "resp_m", "crisis",  "bau", "spaceship", "decade", "iden", "bal", "loss", "health", "wild", "kin_m", "iden_m", "extract", "tech"))
 
-```
-## Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-## else paste0(labels, : duplicated levels in factors are deprecated
-```
 
-```r
 #sort by tourist responses
 #m3p$value <- factor(m3p$value, levels=c("other_m", "iden_m", "resp_m", "kin_m", "clean",	"other",	"resp",	"right",	"comm",	"health",	"iden",	"decade",	"abuse",	"kin",	"bal",	"loss",	"wild",	"crisis",	"bau",	"spaceship",	"tech",	"extract,"))
 
 m3pt <- m3p %>% 
   tbl_df %>% 
-  filter(type1 != "Metaphor") %>% 
+#  filter(type1 != "Metaphor") %>% 
   filter(type1 != "Other") # %>% 
   #mutate(value = reorder(value, mean_resp)) %>% 
   #arrange(value)
 
-bar_mean_3 <- ggplot(m3pt, aes(x = value, y = mean_resp, fill = type2)) +
+bar_mean2 <- ggplot(na.omit(m3pt), aes(x = value, y = mean_resp, fill = type1)) +
   geom_bar(stat = "identity", width = 0.75) +
   scale_fill_viridis(discrete=TRUE, option = "viridis", name = "Type of\nValue Prompt") +
   xlab("Social-Ecological Value Prompt") +
@@ -471,21 +465,7 @@ bar_mean_3 <- ggplot(m3pt, aes(x = value, y = mean_resp, fill = type2)) +
   ggtitle("Mean Response to Value Prompts") +
   facet_grid(sub_pop~.)
 
-bar_mean_3
-```
-
-```
-## Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-## else paste0(labels, : duplicated levels in factors are deprecated
-```
-
-```
-## Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-## else paste0(labels, : duplicated levels in factors are deprecated
-```
-
-```
-## Warning: Removed 8 rows containing missing values (position_stack).
+bar_mean2
 ```
 
 ![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-15-1.png) 

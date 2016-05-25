@@ -1,67 +1,1 @@
-value,type1,type2,sub_pop,mean_resp
-abuse,NEP,NEP,Farmer,4.805
-bal,NEP,NEP,Farmer,4.488
-crisis,NEP,NEP,Farmer,2.836
-spaceship,NEP,NEP,Farmer,4.741
-bau,NEP,NEP,Farmer,4.809
-resp,Relational,Relational,Farmer,4.327
-comm,Relational,Relational,Farmer,4.701
-wild,Relational,Relational,Farmer,4.207
-iden,Relational,Relational,Farmer,4.462
-kin,Relational,Relational,Farmer,4.264
-health,Relational,Relational,Farmer,
-other,Relational,Relational,Farmer,4.753
-right,Intrinsic,Not relational,Farmer,
-kin_m,Metaphor,Not relational,Farmer,4.259
-resp_m,Metaphor,Not relational,Farmer,4.578
-iden_m,Metaphor,Not relational,Farmer,4.343
-other_m,Metaphor,Not relational,Farmer,4.446
-decade,Intrinsic,Not relational,Farmer,
-extract,Instrumental,Not relational,Farmer,
-loss,Instrumental,Not relational,Farmer,
-clean,Instrumental,Not relational,Farmer,
-tech,Other,Not relational,Farmer,
-abuse,NEP,NEP,M-Turk,4.253
-bal,NEP,NEP,M-Turk,3.813
-crisis,NEP,NEP,M-Turk,3.968
-spaceship,NEP,NEP,M-Turk,3.877
-bau,NEP,NEP,M-Turk,3.895
-resp,Relational,Relational,M-Turk,
-comm,Relational,Relational,M-Turk,4.068
-wild,Relational,Relational,M-Turk,3.698
-iden,Relational,Relational,M-Turk,3.823
-kin,Relational,Relational,M-Turk,4.003
-health,Relational,Relational,M-Turk,3.719
-other,Relational,Relational,M-Turk,4.343
-right,Intrinsic,Not relational,M-Turk,4.005
-kin_m,Metaphor,Not relational,M-Turk,3.382
-resp_m,Metaphor,Not relational,M-Turk,3.985
-iden_m,Metaphor,Not relational,M-Turk,2.988
-other_m,Metaphor,Not relational,M-Turk,4.088
-decade,Intrinsic,Not relational,M-Turk,3.86
-extract,Instrumental,Not relational,M-Turk,2.808
-loss,Instrumental,Not relational,M-Turk,3.774
-clean,Instrumental,Not relational,M-Turk,4.685
-tech,Other,Not relational,M-Turk,2.503
-abuse,NEP,NEP,Tourist,3.813
-bal,NEP,NEP,Tourist,3.712
-crisis,NEP,NEP,Tourist,3.682
-spaceship,NEP,NEP,Tourist,3.519
-bau,NEP,NEP,Tourist,3.553
-resp,Relational,Relational,Tourist,4.275
-comm,Relational,Relational,Tourist,4.087
-wild,Relational,Relational,Tourist,3.689
-iden,Relational,Relational,Tourist,3.815
-kin,Relational,Relational,Tourist,3.807
-health,Relational,Relational,Tourist,3.94
-other,Relational,Relational,Tourist,4.377
-right,Intrinsic,Not relational,Tourist,4.158
-kin_m,Metaphor,Not relational,Tourist,
-resp_m,Metaphor,Not relational,Tourist,
-iden_m,Metaphor,Not relational,Tourist,
-other_m,Metaphor,Not relational,Tourist,
-decade,Intrinsic,Not relational,Tourist,
-extract,Instrumental,Not relational,Tourist,2.533
-loss,Instrumental,Not relational,Tourist,3.69
-clean,Instrumental,Not relational,Tourist,4.654
-tech,Other,Not relational,Tourist,3.101
+value,type1,type2,sub_pop,mean_respcrisis,NEP,NEP,Farmer,2.836wild,Relational,Relational,Farmer,4.207kin_m,Metaphor,Not relational,Farmer,4.259kin,Relational,Relational,Farmer,4.264resp,Relational,Relational,Farmer,4.327iden_m,Metaphor,Not relational,Farmer,4.343other_m,Metaphor,Not relational,Farmer,4.446iden,Relational,Relational,Farmer,4.462bal,NEP,NEP,Farmer,4.488resp_m,Metaphor,Not relational,Farmer,4.578comm,Relational,Relational,Farmer,4.701spaceship,NEP,NEP,Farmer,4.741other,Relational,Relational,Farmer,4.753abuse,NEP,NEP,Farmer,4.805bau,NEP,NEP,Farmer,4.809health,Relational,Relational,Farmer,right,Intrinsic,Not relational,Farmer,decade,Intrinsic,Not relational,Farmer,extract,Instrumental,Not relational,Farmer,loss,Instrumental,Not relational,Farmer,clean,Instrumental,Not relational,Farmer,tech,Other,Not relational,Farmer,tech,Other,Not relational,M-Turk,2.503extract,Instrumental,Not relational,M-Turk,2.808iden_m,Metaphor,Not relational,M-Turk,2.988kin_m,Metaphor,Not relational,M-Turk,3.382wild,Relational,Relational,M-Turk,3.698health,Relational,Relational,M-Turk,3.719loss,Instrumental,Not relational,M-Turk,3.774bal,NEP,NEP,M-Turk,3.813iden,Relational,Relational,M-Turk,3.823decade,Intrinsic,Not relational,M-Turk,3.86spaceship,NEP,NEP,M-Turk,3.877bau,NEP,NEP,M-Turk,3.895crisis,NEP,NEP,M-Turk,3.968resp_m,Metaphor,Not relational,M-Turk,3.985kin,Relational,Relational,M-Turk,4.003right,Intrinsic,Not relational,M-Turk,4.005comm,Relational,Relational,M-Turk,4.068other_m,Metaphor,Not relational,M-Turk,4.088abuse,NEP,NEP,M-Turk,4.253other,Relational,Relational,M-Turk,4.343clean,Instrumental,Not relational,M-Turk,4.685resp,Relational,Relational,M-Turk,extract,Instrumental,Not relational,Tourist,2.533tech,Other,Not relational,Tourist,3.101spaceship,NEP,NEP,Tourist,3.519bau,NEP,NEP,Tourist,3.553crisis,NEP,NEP,Tourist,3.682wild,Relational,Relational,Tourist,3.689loss,Instrumental,Not relational,Tourist,3.69bal,NEP,NEP,Tourist,3.712kin,Relational,Relational,Tourist,3.807abuse,NEP,NEP,Tourist,3.813iden,Relational,Relational,Tourist,3.815health,Relational,Relational,Tourist,3.94comm,Relational,Relational,Tourist,4.087right,Intrinsic,Not relational,Tourist,4.158resp,Relational,Relational,Tourist,4.275other,Relational,Relational,Tourist,4.377clean,Instrumental,Not relational,Tourist,4.654kin_m,Metaphor,Not relational,Tourist,resp_m,Metaphor,Not relational,Tourist,iden_m,Metaphor,Not relational,Tourist,other_m,Metaphor,Not relational,Tourist,decade,Intrinsic,Not relational,Tourist,

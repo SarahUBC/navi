@@ -178,7 +178,7 @@ print(g1)
 
 #Factor Analysis
 #3 factors
-fit_mt_t <- factanal(~ ., factors = 3, data = mtt2)
+virifit_mt_t <- factanal(~ ., factors = 3, data = mtt2)
 print(fit_mt_t, digits=2, cutoff=.3, sort=TRUE)
 # plot factor 1 by factor 2 
 load <- fit_mt_t$loadings[,1:2] 

@@ -45,7 +45,6 @@ library(Hmisc) #to run correlations with sig levels
 ```
 
 ```r
-library(ggplot2) # for great charts
 library(ggthemes) # for pretty themes in ggplot
 ```
 
@@ -101,6 +100,7 @@ library(stargazer) # makes pretty tables
 
 ```r
 library(corrgram)
+library(ggplot2) # for great charts
 # library(stats) # for PCA
 # library(psych)
 ```
@@ -548,8 +548,12 @@ corr1
 ## mean_nep      0.0000   0.0000   0.0000
 ```
 
+```r
+# corr2 <- rcorr(as.matrix(ev_wf[11:37]), type = "spearman")
+# corr2
+```
+
 Make it visual
-11:36
 
 
 ```r
@@ -561,13 +565,38 @@ corrgram(ev_wf[1:36], order=TRUE, lower.panel=panel.shade,
 
 ```r
 #fun colors
-corrgram(ev_wf[11:36], order=TRUE, lower.panel=panel.shade, 
+cg_yb <- corrgram(ev_wf[11:36], order=TRUE, lower.panel=panel.shade, 
    upper.panel=panel.pie, text.panel=panel.txt, col.regions = colorRampPalette(c("purple4", "skyblue1", "khaki1", "gold1")), main="Environmental Values & Wind Farm (PC2/PC1 Order)")
 ```
 
 ![](Corr_explore_wf_ev_files/figure-html/unnamed-chunk-4-2.png) 
 
 ```r
-#ggsave("corrgram_wf.pdf")
+cg_yb
 ```
+
+```
+## NULL
+```
+
+```r
+#ggsave(cg_yb, file = "/Users/sarahklain/Documents/R_2015/navi/corr_figs/cg_y_b.pdf")
+#pdf(file = "/Users/sarahklain/Documents/R_2015/navi/corr_figs/cg_y_b.pdf")
+```
+
+
+```r
+library(corrplot)
+```
+
+```
+## Warning: package 'corrplot' was built under R version 3.2.5
+```
+
+```r
+ev_wf2 <-na.omit(ev_wf)
+corrplot(cor(as.matrix(ev_wf2[1:36])), order = "hclust", tl.col='black', tl.cex=.75, na.label.col = "black") 
+```
+
+![](Corr_explore_wf_ev_files/figure-html/unnamed-chunk-5-1.png) 
 

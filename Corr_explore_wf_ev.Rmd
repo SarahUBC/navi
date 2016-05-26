@@ -62,3 +62,9 @@ cg_yb
 #pdf(file = "/Users/sarahklain/Documents/R_2015/navi/corr_figs/cg_y_b.pdf")
 ```
 
+```{r}
+library(corrplot)
+ev_wf2 <-na.omit(ev_wf)
+corrplot(cor(as.matrix(ev_wf2[1:36])), order = "hclust", tl.col='black', tl.cex=.75, na.label.col = "black") 
+```
+

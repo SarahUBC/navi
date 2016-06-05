@@ -64,7 +64,7 @@ ev_inst <- evtab %>%
   mutate(v_type = "inst")
 
 ev_rel <- evtab %>% 
-  filter(val_state == "comm_rel" | val_state == "iden_rel" | val_state == "kin_rel" | val_state == "wild_rel" | val_state == "health_rel2" | val_state == "other_rel" ) %>% 
+  filter(val_state == "comm_rel" | val_state == "iden_rel" | val_state == "kin_rel" | val_state == "wild_rel" | val_state == "health_rel2" | val_state == "other_rel" | val_state == "resp_rel" ) %>% 
   mutate(v_type = "rel")
 
 ev_met <- evtab %>% 
@@ -188,31 +188,49 @@ val_st_vio_NEP
 ```
 
 
-Bar plot, all value statements
+### Histogram, all value statements
 
 ```{r}
-eval_t3$val_state <- factor(eval_t3$val_state, levels=c("extract_r_ins" ,"loss_r_ins","clean_inst","kin_met", "resp_met", "iden_met","other_met", "decade_r_mor","right_r_mor", "abuse_nep", "bal_r_nep", "crisis_r_nep", "spaceship_nep", "bau_nep", "comm_rel", "wild_rel", "iden_rel", "kin_rel", "health_rel2", "other_rel"))
+eval_t3$val_state <- factor(eval_t3$val_state, levels=c("extract_r_ins" ,"loss_r_ins","clean_inst", "kin_met", "resp_met", "iden_met","other_met", "decade_r_mor","right_r_mor", "abuse_nep", "bal_r_nep", "crisis_r_nep", "spaceship_nep", "bau_nep", "comm_rel", "wild_rel","resp_rel", "iden_rel", "kin_rel", "health_rel2", "other_rel"))
 
 bar_all <- ggplot(eval_t3, aes(x = response, fill = v_type)) +
-  geom_histogram(binwidth = 0.5) +
-  scale_fill_viridis(discrete=TRUE, option = "viridis") +
-  xlab("Response\n1 = Strongly Disagree; 2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  geom_histogram(binwidth = 1) +
+  scale_fill_viridis(discrete=TRUE, option = "viridis", "") +
+  xlab("Response\n1 = Strongly Disagree;\n2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
   ggtitle("To what extent do you agree with these statements?") +
-  coord_cartesian(xlim = c(1, 5)) +
+  coord_cartesian(xlim = c(1, 5)) + coord_flip() +
   facet_grid(~ val_state)
-
+  
 bar_all
+```
 
+### Histogram by value statement and pop
+```{r}
 bar_all2 <- ggplot(eval_t3, aes(x = response, fill = v_type)) +
-  geom_histogram(binwidth = 0.5) +
-  scale_fill_viridis(discrete=TRUE, option = "viridis") +
-  xlab("Response\n1 = Strongly Disagree; 2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  geom_histogram(binwidth = 1) +
+  scale_fill_viridis(discrete=TRUE, option = "viridis", "") +
+  xlab("Response\n1 = Strongly Disagree;\n2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
   ggtitle("To what extent do you agree with these statements?") +
-  coord_cartesian(xlim = c(1, 5)) +
+  coord_cartesian(xlim = c(1, 5)) + coord_flip() +
   facet_grid(sub_pop ~ val_state)
 
 bar_all2
 #ggsave(bar_all, file="/Users/sarahklain/Documents/R_2015/env_val/figs/bar_all.pdf")
+```
+
+### Means with error bars
+```{r}
+val_mean_se <- ggplot(eval_t3, aes(factor(val_state), response, color = v_type, width = 0.25)) +
+  stat_boxplot(geom ='errorbar', width = 0.25) +
+  geom_boxplot(width = 0.25) +
+  scale_color_viridis(discrete=TRUE) +
+  ylab("Response\n1 = Strongly Disagree;\n2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  ggtitle("To what extent do you agree with these statements?") +
+  stat_summary(fun.y=mean, geom="point", shape=10, size=2)  +
+  #coord_flip() +
+  facet_grid(sub_pop~.)
+
+val_mean_se
 ```
 
 
@@ -221,8 +239,8 @@ Vio plot with means, NEP and rel
 ```{r}
 val_st_vio_sp_mean <- ggplot(eval_t4, aes(x = v_type, y = response, fill = v_type)) +
  geom_violin(adjust=0.3) +
-  xlab("Statement") + ylab("Response\n1 = Strongly Disagree; 2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
-  scale_fill_viridis(discrete=TRUE, "Category of Value\nStatement") +
+  xlab("Statement") + ylab("Response\n1 = Strongly Disagree; 2 = Disagree;\n13 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  scale_fill_viridis(discrete=TRUE, "Category \nof Value\nStatement") +
   ggtitle("To what extent do you agree with these value statements?") +
   coord_cartesian(ylim = c(1, 5)) +
   stat_summary(fun.y=mean, colour="orangered", geom="point", 
@@ -237,17 +255,48 @@ with other value types
 ```{r}
 val_st_vio_mean <- ggplot(eval_t3, aes(x = v_type, y = response, fill = v_type)) +
  geom_violin(adjust=0.3) +
-  xlab("Statement") + ylab("Response\n1 = Strongly Disagree; 2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
-  scale_fill_viridis(discrete=TRUE, "Category of Value\nStatement") +
+  xlab("Statement") + ylab("Response\n1 = Strongly Disagree 2 = Disagree;\n3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  scale_fill_viridis(discrete=TRUE, "Category\nof Value\nStatement") +
   ggtitle("To what extent do you agree with these value statements?") +
   coord_cartesian(ylim = c(1, 5)) +
   stat_summary(fun.y=mean, colour="orangered", geom="point", 
-               shape=10, size=5)  +
+               shape=10, size=4)  +
   facet_grid(~ sub_pop)
 
 val_st_vio_mean
-ggsave(val_st_vio_mean, file="/Users/sarahklain/Documents/R_2015/navi/figs/val_st_vio_mean.jpg")
+#ggsave(val_st_vio_mean, file="/Users/sarahklain/Documents/R_2015/navi/figs/val_st_vio_mean.jpg")
 ```
+
+```{r}
+val_st_bp_mean <- ggplot(eval_t3, aes(x = v_type, y = response, fill = v_type)) +
+ geom_boxplot() +
+  xlab("Statement") + ylab("Response\n1 = Strongly Disagree 2 = Disagree;\n3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  scale_fill_viridis(discrete=TRUE, "Category\nof Value\nStatement") +
+  ggtitle("To what extent do you agree with these value statements?") +
+  coord_cartesian(ylim = c(1, 5)) +
+  stat_summary(fun.y=mean, colour="orangered", geom="point", 
+               shape=10, size=4)  +
+  facet_grid(~ sub_pop)
+
+val_st_bp_mean
+#ggsave(val_st_vio_mean, file="/Users/sarahklain/Documents/R_2015/navi/figs/val_st_vio_mean.jpg")
+```
+
+
+```{r}
+val_st_bp_mean_all <- ggplot(eval_t3, aes(x = val_state, y = response, fill = v_type)) +
+ geom_boxplot() +
+  xlab("Statement") + ylab("Response\n1 = Strongly Disagree 2 = Disagree;\n3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  scale_fill_viridis(discrete=TRUE, "Category\nof Value\nStatement") +
+  ggtitle("To what extent do you agree with these value statements?") +
+  coord_cartesian(ylim = c(1, 5)) +
+  stat_summary(fun.y=mean, colour="orangered", geom="point", 
+               shape=10, size=4)  +
+  facet_grid(~ sub_pop)
+
+val_st_bp_mean_all
+```
+
 
 ```{r}
 all_m <- read.csv("all_means.csv")
@@ -351,3 +400,26 @@ eval_NEP_to <- eval_t4 %>%
 mean(eval_NEP_to$response)
 
 ```
+
+T-tests
+Are means for subpops different from each other?
+
+```{r}
+library(Hmisc)
+
+#Relational
+t.test(eval_rel_f$response, eval_rel_to$response, paired = FALSE)
+t.test(eval_rel_mt$response, eval_rel_to$response, paired = FALSE)
+
+#NEP
+t.test(eval_NEP_f$response, eval_NEP_to$response, paired = FALSE)
+t.test(eval_NEP_f$response, eval_NEP_mt$response, paired = FALSE)
+t.test(eval_NEP_mt$response, eval_NEP_to$response, paired = FALSE)
+```
+
+```{r}
+library(corrplot)
+#foo <-na.omit(ev)
+#corrplot(cor(as.matrix(foo)), order = "hclust", tl.col='black', #tl.cex=.75, na.label.col = "black") 
+```
+

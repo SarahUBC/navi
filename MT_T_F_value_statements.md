@@ -144,7 +144,7 @@ ev_inst <- evtab %>%
   mutate(v_type = "inst")
 
 ev_rel <- evtab %>% 
-  filter(val_state == "comm_rel" | val_state == "iden_rel" | val_state == "kin_rel" | val_state == "wild_rel" | val_state == "health_rel2" | val_state == "other_rel" ) %>% 
+  filter(val_state == "comm_rel" | val_state == "iden_rel" | val_state == "kin_rel" | val_state == "wild_rel" | val_state == "health_rel2" | val_state == "other_rel" | val_state == "resp_rel" ) %>% 
   mutate(v_type = "rel")
 
 ev_met <- evtab %>% 
@@ -161,7 +161,7 @@ str(eval_t2)
 ```
 
 ```
-## Classes 'tbl_df', 'tbl' and 'data.frame':	18920 obs. of  5 variables:
+## Classes 'tbl_df', 'tbl' and 'data.frame':	19866 obs. of  5 variables:
 ##  $ sub_pop  : Factor w/ 3 levels "Farmer","M-Turk",..: 3 3 3 3 3 3 3 3 3 3 ...
 ##  $ id_num   : Factor w/ 946 levels "D101","D102",..: 121 5 8 13 17 19 22 27 28 30 ...
 ##  $ val_state: Factor w/ 31 levels "abuse_nep","bal",..: 1 1 1 1 1 1 1 1 1 1 ...
@@ -175,15 +175,15 @@ summary(eval_t2)
 
 ```
 ##     sub_pop         id_num              val_state        response    
-##  Farmer :5060   D101   :   20   abuse_nep    :  946   Min.   :1.000  
-##  M-Turk :8000   D102   :   20   bal_r_nep    :  946   1st Qu.:3.000  
-##  Tourist:5860   D103   :   20   crisis_r_nep :  946   Median :4.000  
-##                 D104   :   20   spaceship_nep:  946   Mean   :3.963  
-##                 D105   :   20   bau_nep      :  946   3rd Qu.:5.000  
-##                 D106   :   20   extract_r_ins:  946   Max.   :5.000  
-##                 (Other):18800   (Other)      :13244   NA's   :3701   
+##  Farmer :5313   D101   :   21   abuse_nep    :  946   Min.   :1.000  
+##  M-Turk :8400   D102   :   21   bal_r_nep    :  946   1st Qu.:3.000  
+##  Tourist:6153   D103   :   21   crisis_r_nep :  946   Median :4.000  
+##                 D104   :   21   spaceship_nep:  946   Mean   :3.974  
+##                 D105   :   21   bau_nep      :  946   3rd Qu.:5.000  
+##                 D106   :   21   extract_r_ins:  946   Max.   :5.000  
+##                 (Other):19740   (Other)      :14190   NA's   :4136   
 ##     v_type         
-##  Length:18920      
+##  Length:19866      
 ##  Class :character  
 ##  Mode  :character  
 ##                    
@@ -317,42 +317,62 @@ val_st_vio_NEP
 ![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-10-1.png) 
 
 
-Bar plot, all value statements
+### Histogram, all value statements
 
 
 ```r
-eval_t3$val_state <- factor(eval_t3$val_state, levels=c("extract_r_ins" ,"loss_r_ins","clean_inst","kin_met", "resp_met", "iden_met","other_met", "decade_r_mor","right_r_mor", "abuse_nep", "bal_r_nep", "crisis_r_nep", "spaceship_nep", "bau_nep", "comm_rel", "wild_rel", "iden_rel", "kin_rel", "health_rel2", "other_rel"))
+eval_t3$val_state <- factor(eval_t3$val_state, levels=c("extract_r_ins" ,"loss_r_ins","clean_inst", "kin_met", "resp_met", "iden_met","other_met", "decade_r_mor","right_r_mor", "abuse_nep", "bal_r_nep", "crisis_r_nep", "spaceship_nep", "bau_nep", "comm_rel", "wild_rel","resp_rel", "iden_rel", "kin_rel", "health_rel2", "other_rel"))
 
 bar_all <- ggplot(eval_t3, aes(x = response, fill = v_type)) +
-  geom_histogram(binwidth = 0.5) +
-  scale_fill_viridis(discrete=TRUE, option = "viridis") +
-  xlab("Response\n1 = Strongly Disagree; 2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  geom_histogram(binwidth = 1) +
+  scale_fill_viridis(discrete=TRUE, option = "viridis", "") +
+  xlab("Response\n1 = Strongly Disagree;\n2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
   ggtitle("To what extent do you agree with these statements?") +
-  coord_cartesian(xlim = c(1, 5)) +
+  coord_cartesian(xlim = c(1, 5)) + coord_flip() +
   facet_grid(~ val_state)
-
+  
 bar_all
 ```
 
 ![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-11-1.png) 
 
+### Histogram by value statement and pop
+
 ```r
 bar_all2 <- ggplot(eval_t3, aes(x = response, fill = v_type)) +
-  geom_histogram(binwidth = 0.5) +
-  scale_fill_viridis(discrete=TRUE, option = "viridis") +
-  xlab("Response\n1 = Strongly Disagree; 2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  geom_histogram(binwidth = 1) +
+  scale_fill_viridis(discrete=TRUE, option = "viridis", "") +
+  xlab("Response\n1 = Strongly Disagree;\n2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
   ggtitle("To what extent do you agree with these statements?") +
-  coord_cartesian(xlim = c(1, 5)) +
+  coord_cartesian(xlim = c(1, 5)) + coord_flip() +
   facet_grid(sub_pop ~ val_state)
 
 bar_all2
 ```
 
-![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-11-2.png) 
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-12-1.png) 
 
 ```r
 #ggsave(bar_all, file="/Users/sarahklain/Documents/R_2015/env_val/figs/bar_all.pdf")
 ```
+
+### Means with error bars
+
+```r
+val_mean_se <- ggplot(eval_t3, aes(factor(val_state), response, color = v_type, width = 0.25)) +
+  stat_boxplot(geom ='errorbar', width = 0.25) +
+  geom_boxplot(width = 0.25) +
+  scale_color_viridis(discrete=TRUE) +
+  ylab("Response\n1 = Strongly Disagree;\n2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  ggtitle("To what extent do you agree with these statements?") +
+  stat_summary(fun.y=mean, geom="point", shape=10, size=2)  +
+  #coord_flip() +
+  facet_grid(sub_pop~.)
+
+val_mean_se
+```
+
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-13-1.png) 
 
 
 Vio plot with means, NEP and rel
@@ -361,8 +381,8 @@ Vio plot with means, NEP and rel
 ```r
 val_st_vio_sp_mean <- ggplot(eval_t4, aes(x = v_type, y = response, fill = v_type)) +
  geom_violin(adjust=0.3) +
-  xlab("Statement") + ylab("Response\n1 = Strongly Disagree; 2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
-  scale_fill_viridis(discrete=TRUE, "Category of Value\nStatement") +
+  xlab("Statement") + ylab("Response\n1 = Strongly Disagree; 2 = Disagree;\n13 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  scale_fill_viridis(discrete=TRUE, "Category \nof Value\nStatement") +
   ggtitle("To what extent do you agree with these value statements?") +
   coord_cartesian(ylim = c(1, 5)) +
   stat_summary(fun.y=mean, colour="orangered", geom="point", 
@@ -372,7 +392,7 @@ val_st_vio_sp_mean <- ggplot(eval_t4, aes(x = v_type, y = response, fill = v_typ
 val_st_vio_sp_mean
 ```
 
-![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-12-1.png) 
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-14-1.png) 
 
 ```r
 ggsave(val_st_vio_sp_mean, file="/Users/sarahklain/Documents/R_2015/navi/figs/val_st_vio_sp_mean.jpg")
@@ -387,26 +407,62 @@ with other value types
 ```r
 val_st_vio_mean <- ggplot(eval_t3, aes(x = v_type, y = response, fill = v_type)) +
  geom_violin(adjust=0.3) +
-  xlab("Statement") + ylab("Response\n1 = Strongly Disagree; 2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
-  scale_fill_viridis(discrete=TRUE, "Category of Value\nStatement") +
+  xlab("Statement") + ylab("Response\n1 = Strongly Disagree 2 = Disagree;\n3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  scale_fill_viridis(discrete=TRUE, "Category\nof Value\nStatement") +
   ggtitle("To what extent do you agree with these value statements?") +
   coord_cartesian(ylim = c(1, 5)) +
   stat_summary(fun.y=mean, colour="orangered", geom="point", 
-               shape=10, size=5)  +
+               shape=10, size=4)  +
   facet_grid(~ sub_pop)
 
 val_st_vio_mean
 ```
 
-![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-13-1.png) 
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-15-1.png) 
 
 ```r
-ggsave(val_st_vio_mean, file="/Users/sarahklain/Documents/R_2015/navi/figs/val_st_vio_mean.jpg")
+#ggsave(val_st_vio_mean, file="/Users/sarahklain/Documents/R_2015/navi/figs/val_st_vio_mean.jpg")
 ```
 
+
+```r
+val_st_bp_mean <- ggplot(eval_t3, aes(x = v_type, y = response, fill = v_type)) +
+ geom_boxplot() +
+  xlab("Statement") + ylab("Response\n1 = Strongly Disagree 2 = Disagree;\n3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  scale_fill_viridis(discrete=TRUE, "Category\nof Value\nStatement") +
+  ggtitle("To what extent do you agree with these value statements?") +
+  coord_cartesian(ylim = c(1, 5)) +
+  stat_summary(fun.y=mean, colour="orangered", geom="point", 
+               shape=10, size=4)  +
+  facet_grid(~ sub_pop)
+
+val_st_bp_mean
 ```
-## Saving 7 x 5 in image
+
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-16-1.png) 
+
+```r
+#ggsave(val_st_vio_mean, file="/Users/sarahklain/Documents/R_2015/navi/figs/val_st_vio_mean.jpg")
 ```
+
+
+
+```r
+val_st_bp_mean_all <- ggplot(eval_t3, aes(x = val_state, y = response, fill = v_type)) +
+ geom_boxplot() +
+  xlab("Statement") + ylab("Response\n1 = Strongly Disagree 2 = Disagree;\n3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  scale_fill_viridis(discrete=TRUE, "Category\nof Value\nStatement") +
+  ggtitle("To what extent do you agree with these value statements?") +
+  coord_cartesian(ylim = c(1, 5)) +
+  stat_summary(fun.y=mean, colour="orangered", geom="point", 
+               shape=10, size=4)  +
+  facet_grid(~ sub_pop)
+
+val_st_bp_mean_all
+```
+
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-17-1.png) 
+
 
 
 ```r
@@ -435,7 +491,7 @@ bar_means <- ggplot(all_m2, aes(x = value, y = ave, fill = v_type)) +
 bar_means
 ```
 
-![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-14-1.png) 
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-18-1.png) 
 
 
 
@@ -468,7 +524,7 @@ bar_mean2 <- ggplot(na.omit(m3pt), aes(x = value, y = mean_resp, fill = type1)) 
 bar_mean2
 ```
 
-![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-15-1.png) 
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-19-1.png) 
 
 calc means for sub pops, relational values
 
@@ -482,7 +538,7 @@ mean(eval_rel_f$response)
 ```
 
 ```
-## [1] 4.477671
+## [1] 4.452492
 ```
 
 ```r
@@ -506,7 +562,7 @@ mean(eval_rel_to$response)
 ```
 
 ```
-## [1] 3.918027
+## [1] 3.975746
 ```
 
 calc means for sub pops, NEP
@@ -547,3 +603,116 @@ mean(eval_NEP_to$response)
 ```
 ## [1] 3.655873
 ```
+
+T-tests
+Are means for subpops different from each other?
+
+
+```r
+library(Hmisc)
+
+#Relational
+t.test(eval_rel_f$response, eval_rel_to$response, paired = FALSE)
+```
+
+```
+## 
+## 	Welch Two Sample t-test
+## 
+## data:  eval_rel_f$response and eval_rel_to$response
+## t = 15.858, df = 2701.2, p-value < 2.2e-16
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.4177947 0.5356961
+## sample estimates:
+## mean of x mean of y 
+##  4.452492  3.975746
+```
+
+```r
+t.test(eval_rel_mt$response, eval_rel_to$response, paired = FALSE)
+```
+
+```
+## 
+## 	Welch Two Sample t-test
+## 
+## data:  eval_rel_mt$response and eval_rel_to$response
+## t = -1.0745, df = 3182.9, p-value = 0.2827
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.0954341  0.0278664
+## sample estimates:
+## mean of x mean of y 
+##  3.941962  3.975746
+```
+
+```r
+#NEP
+t.test(eval_NEP_f$response, eval_NEP_to$response, paired = FALSE)
+```
+
+```
+## 
+## 	Welch Two Sample t-test
+## 
+## data:  eval_NEP_f$response and eval_NEP_to$response
+## t = 14.917, df = 2535.1, p-value < 2.2e-16
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.5914097 0.7704267
+## sample estimates:
+## mean of x mean of y 
+##  4.336792  3.655873
+```
+
+```r
+t.test(eval_NEP_f$response, eval_NEP_mt$response, paired = FALSE)
+```
+
+```
+## 
+## 	Welch Two Sample t-test
+## 
+## data:  eval_NEP_f$response and eval_NEP_mt$response
+## t = 9.3564, df = 2240.5, p-value < 2.2e-16
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.2970596 0.4546019
+## sample estimates:
+## mean of x mean of y 
+##  4.336792  3.960961
+```
+
+```r
+t.test(eval_NEP_mt$response, eval_NEP_to$response, paired = FALSE)
+```
+
+```
+## 
+## 	Welch Two Sample t-test
+## 
+## data:  eval_NEP_mt$response and eval_NEP_to$response
+## t = 8.1541, df = 2554.9, p-value = 5.453e-16
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.2317198 0.3784551
+## sample estimates:
+## mean of x mean of y 
+##  3.960961  3.655873
+```
+
+
+```r
+library(corrplot)
+```
+
+```
+## Warning: package 'corrplot' was built under R version 3.2.5
+```
+
+```r
+#foo <-na.omit(ev)
+#corrplot(cor(as.matrix(foo)), order = "hclust", tl.col='black', #tl.cex=.75, na.label.col = "black") 
+```
+

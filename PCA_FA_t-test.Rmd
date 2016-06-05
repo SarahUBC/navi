@@ -60,7 +60,7 @@ g <- g + theme(legend.direction = 'horizontal',
                legend.position = 'top')
 print(g)
 ```
- 
+
 ### Factor Analysis
 #### FA for three populations
 3 factors
@@ -251,3 +251,10 @@ t_om_rm
 
 ```
 
+Corelogram of variables
+```{r}
+library(corrplot)
+ev2 <-na.omit(ev1)
+
+corrplot(cor(as.matrix(ev2)), order = "hclust", tl.col='black', tl.cex=.75, na.label.col = "black") 
+```

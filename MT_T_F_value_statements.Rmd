@@ -169,6 +169,30 @@ val_st_vio_sp3 <- ggplot(eval_t5, aes(x = sub_pop, y = response, fill = sub_pop)
 val_st_vio_sp3
 ```
 
+Histogram plot by rel
+```{r}
+
+eval_t5 <- eval_t4 %>% 
+  filter(v_type == "rel")
+
+library(plyr)
+cdat <- ddply(eval_t5, "val_state", summarise, rsp.mean=mean(response))
+cdat
+
+val_st_hist_sp3 <- ggplot(eval_t5, aes(x = response, fill = sub_pop)) +
+ geom_histogram(binwidth = 1) +
+  xlab("Response\n1 = Strongly Disagree; 5 = Strongly Agree") +
+  scale_fill_viridis(discrete=TRUE) +
+  #coord_cartesian(ylim = c(1, 5)) +
+  coord_flip() +
+  facet_grid(sub_pop ~ val_state) #+
+  #geom_vline(data=cdat, aes(xintercept=rsp.mean),
+    #           linetype="dotted", size=0.5, colour="red")
+
+val_st_hist_sp3
+```
+
+
 NEP
 ```{r}
 eval_NEP <- eval_t4 %>% 
@@ -187,6 +211,24 @@ val_st_vio_NEP <- ggplot(eval_NEP, aes(x = sub_pop, y = response, fill = sub_pop
 val_st_vio_NEP
 ```
 
+hist by NEP
+```{r}
+eval_NEP <- eval_t4 %>% 
+  filter(v_type == "NEP")
+
+
+NEP_hist <- ggplot(eval_NEP, aes(x = response, fill = sub_pop)) +
+ geom_histogram(binwidth = 1) +
+  xlab("Response\n1 = Strongly Disagree; 5 = Strongly Agree") +
+  scale_fill_viridis(discrete=TRUE) +
+  #coord_cartesian(ylim = c(1, 5)) +
+  coord_flip() +
+  facet_grid(sub_pop ~ val_state) #+
+  #geom_vline(data=cdat, aes(xintercept=rsp.mean),
+    #           linetype="dotted", size=0.5, colour="red")
+
+NEP_hist
+```
 
 ### Histogram, all value statements
 
@@ -233,6 +275,19 @@ val_mean_se <- ggplot(eval_t3, aes(factor(val_state), response, color = v_type, 
 val_mean_se
 ```
 
+```{r}
+val_mean_se <- ggplot(eval_t3, aes(factor(val_state), response, color = v_type, width = 0.25)) +
+  stat_boxplot(geom ='errorbar', width = 0.25) +
+  geom_boxplot(width = 0.25) +
+  scale_color_viridis(discrete=TRUE) +
+  ylab("Response\n1 = Strongly Disagree;\n2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  ggtitle("To what extent do you agree with these statements?") +
+  stat_summary(fun.y=mean, geom="point", shape=10, size=2)  +
+  #coord_flip() +
+  facet_grid(sub_pop~.)
+
+val_mean_se
+```
 
 Vio plot with means, NEP and rel
 
@@ -267,19 +322,66 @@ val_st_vio_mean
 #ggsave(val_st_vio_mean, file="/Users/sarahklain/Documents/R_2015/navi/figs/val_st_vio_mean.jpg")
 ```
 
-```{r}
-val_st_bp_mean <- ggplot(eval_t3, aes(x = v_type, y = response, fill = v_type)) +
- geom_boxplot() +
-  xlab("Statement") + ylab("Response\n1 = Strongly Disagree 2 = Disagree;\n3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
-  scale_fill_viridis(discrete=TRUE, "Category\nof Value\nStatement") +
-  ggtitle("To what extent do you agree with these value statements?") +
-  coord_cartesian(ylim = c(1, 5)) +
-  stat_summary(fun.y=mean, colour="orangered", geom="point", 
-               shape=10, size=4)  +
-  facet_grid(~ sub_pop)
+Instead of box plots, use a mean-whisker plot, but (a) make the mean prominent (especially the yellow gets washed out), and (b) make the whiskers represent the standard error of the mean (what is it now? The 95%ile range? That’s very different).
 
-val_st_bp_mean
-#ggsave(val_st_vio_mean, file="/Users/sarahklain/Documents/R_2015/navi/figs/val_st_vio_mean.jpg")
+calc SE
+```{r}
+summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
+                      conf.interval=.95, .drop=TRUE) {
+    library(plyr)
+
+    # New version of length which can handle NA's: if na.rm==T, don't count them
+    length2 <- function (x, na.rm=FALSE) {
+        if (na.rm) sum(!is.na(x))
+        else       length(x)
+    }
+
+    # This does the summary. For each group's data frame, return a vector with
+    # N, mean, and sd
+    datac <- ddply(data, groupvars, .drop=.drop,
+      .fun = function(xx, col) {
+        c(N    = length2(xx[[col]], na.rm=na.rm),
+          mean = mean   (xx[[col]], na.rm=na.rm),
+          sd   = sd     (xx[[col]], na.rm=na.rm)
+        )
+      },
+      measurevar
+    )
+
+    # Rename the "mean" column    
+    datac <- rename(datac, c("mean" = measurevar))
+
+    datac$se <- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
+
+    # Confidence interval multiplier for standard error
+    # Calculate t-statistic for confidence interval: 
+    # e.g., if conf.interval is .95, use .975 (above/below), and use df=N-1
+    ciMult <- qt(conf.interval/2 + .5, datac$N-1)
+    datac$ci <- datac$se * ciMult
+
+    return(datac)
+}
+```
+
+use SE function with my data
+
+```{r}
+r_se <- summarySE(eval_t3, measurevar="response", groupvars=c("sub_pop", "val_state", "v_type"))
+
+# Standard error of the mean
+whisk_se <- ggplot(r_se, aes(x = val_state, y=response, colour=sub_pop)) + 
+  geom_errorbar(aes(ymin = response - se, ymax = response + se), width=.4) +
+  scale_fill_viridis(discrete=TRUE) + 
+  scale_color_viridis(discrete=TRUE, "") +
+  coord_cartesian(ylim = c(1, 5)) +
+    ylab("Response\n1 = Strongly Disagree 2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  xlab("") +
+  geom_point() +
+  stat_summary(fun.y=mean, colour="orangered", geom="point", 
+               shape=10, size=2) +
+  theme(panel.background = element_rect(fill = "gray40"))
+
+whisk_se
 ```
 
 

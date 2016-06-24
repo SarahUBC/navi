@@ -30,7 +30,7 @@ ev_mt <- read.csv("ev_mt.csv")
 ### Cronbach's alpha
 for pooled data
 ```{r}
-alpha(ev, check.keys = TRUE)
+#alpha(ev, check.keys = TRUE)
 alpha(ev1, check.keys = TRUE)
 alpha(ev[3:7],check.keys = TRUE )
 alpha(ev[8:12],check.keys = TRUE )
@@ -42,6 +42,11 @@ farm <- ev[which(ev$sub_pop =='Farmer'), ]
 alpha(farm, check.keys = TRUE)
 alpha(farm[3:7], check.keys = TRUE)
 alpha(farm[8:12],check.keys = TRUE)
+
+#NEP alpha with no crisis prompt
+farm2 <- farm
+farm2$crisis_r_nep <- NULL
+alpha(farm2[3:6], check.keys = TRUE)
 ```
 
 tourists
@@ -75,8 +80,6 @@ alpha(mt_nep, check.keys = TRUE)
 
 Cronbach's alpha for M-Turk value prompt data
 ```{r}
-psych::alpha()
-
 mt_val <- (ev_mt[3:23]) 
 str(mt_val)
 alpha(mt_val, check.keys = TRUE)

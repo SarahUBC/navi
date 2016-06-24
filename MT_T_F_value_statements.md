@@ -295,6 +295,67 @@ val_st_vio_sp3
 
 ![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-9-1.png) 
 
+Histogram plot by rel
+
+```r
+eval_t5 <- eval_t4 %>% 
+  filter(v_type == "rel")
+
+library(plyr)
+```
+
+```
+## -------------------------------------------------------------------------
+## You have loaded plyr after dplyr - this is likely to cause problems.
+## If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+## library(plyr); library(dplyr)
+## -------------------------------------------------------------------------
+## 
+## Attaching package: 'plyr'
+## 
+## The following objects are masked from 'package:dplyr':
+## 
+##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+##     summarize
+## 
+## The following objects are masked from 'package:Hmisc':
+## 
+##     is.discrete, summarize
+```
+
+```r
+cdat <- ddply(eval_t5, "val_state", summarise, rsp.mean=mean(response))
+cdat
+```
+
+```
+##     val_state rsp.mean
+## 1    resp_rel 4.300391
+## 2    comm_rel 4.248075
+## 3    wild_rel 3.835159
+## 4    iden_rel 3.996166
+## 5     kin_rel 4.017544
+## 6 health_rel2 3.779197
+## 7   other_rel 4.477556
+```
+
+```r
+val_st_hist_sp3 <- ggplot(eval_t5, aes(x = response, fill = sub_pop)) +
+ geom_histogram(binwidth = 1) +
+  xlab("Response\n1 = Strongly Disagree; 5 = Strongly Agree") +
+  scale_fill_viridis(discrete=TRUE) +
+  #coord_cartesian(ylim = c(1, 5)) +
+  coord_flip() +
+  facet_grid(sub_pop ~ val_state) #+
+  #geom_vline(data=cdat, aes(xintercept=rsp.mean),
+    #           linetype="dotted", size=0.5, colour="red")
+
+val_st_hist_sp3
+```
+
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-10-1.png) 
+
+
 NEP
 
 ```r
@@ -314,8 +375,29 @@ val_st_vio_NEP <- ggplot(eval_NEP, aes(x = sub_pop, y = response, fill = sub_pop
 val_st_vio_NEP
 ```
 
-![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-10-1.png) 
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-11-1.png) 
 
+hist by NEP
+
+```r
+eval_NEP <- eval_t4 %>% 
+  filter(v_type == "NEP")
+
+
+NEP_hist <- ggplot(eval_NEP, aes(x = response, fill = sub_pop)) +
+ geom_histogram(binwidth = 1) +
+  xlab("Response\n1 = Strongly Disagree; 5 = Strongly Agree") +
+  scale_fill_viridis(discrete=TRUE) +
+  #coord_cartesian(ylim = c(1, 5)) +
+  coord_flip() +
+  facet_grid(sub_pop ~ val_state) #+
+  #geom_vline(data=cdat, aes(xintercept=rsp.mean),
+    #           linetype="dotted", size=0.5, colour="red")
+
+NEP_hist
+```
+
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-12-1.png) 
 
 ### Histogram, all value statements
 
@@ -334,7 +416,7 @@ bar_all <- ggplot(eval_t3, aes(x = response, fill = v_type)) +
 bar_all
 ```
 
-![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-11-1.png) 
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-13-1.png) 
 
 ### Histogram by value statement and pop
 
@@ -350,7 +432,7 @@ bar_all2 <- ggplot(eval_t3, aes(x = response, fill = v_type)) +
 bar_all2
 ```
 
-![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-12-1.png) 
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-14-1.png) 
 
 ```r
 #ggsave(bar_all, file="/Users/sarahklain/Documents/R_2015/env_val/figs/bar_all.pdf")
@@ -372,8 +454,24 @@ val_mean_se <- ggplot(eval_t3, aes(factor(val_state), response, color = v_type, 
 val_mean_se
 ```
 
-![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-13-1.png) 
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-15-1.png) 
 
+
+```r
+val_mean_se <- ggplot(eval_t3, aes(factor(val_state), response, color = v_type, width = 0.25)) +
+  stat_boxplot(geom ='errorbar', width = 0.25) +
+  geom_boxplot(width = 0.25) +
+  scale_color_viridis(discrete=TRUE) +
+  ylab("Response\n1 = Strongly Disagree;\n2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  ggtitle("To what extent do you agree with these statements?") +
+  stat_summary(fun.y=mean, geom="point", shape=10, size=2)  +
+  #coord_flip() +
+  facet_grid(sub_pop~.)
+
+val_mean_se
+```
+
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-16-1.png) 
 
 Vio plot with means, NEP and rel
 
@@ -392,7 +490,7 @@ val_st_vio_sp_mean <- ggplot(eval_t4, aes(x = v_type, y = response, fill = v_typ
 val_st_vio_sp_mean
 ```
 
-![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-14-1.png) 
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-17-1.png) 
 
 ```r
 ggsave(val_st_vio_sp_mean, file="/Users/sarahklain/Documents/R_2015/navi/figs/val_st_vio_sp_mean.jpg")
@@ -418,32 +516,77 @@ val_st_vio_mean <- ggplot(eval_t3, aes(x = v_type, y = response, fill = v_type))
 val_st_vio_mean
 ```
 
-![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-15-1.png) 
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-18-1.png) 
 
 ```r
 #ggsave(val_st_vio_mean, file="/Users/sarahklain/Documents/R_2015/navi/figs/val_st_vio_mean.jpg")
 ```
 
+Instead of box plots, use a mean-whisker plot, but (a) make the mean prominent (especially the yellow gets washed out), and (b) make the whiskers represent the standard error of the mean (what is it now? The 95%ile range? That’s very different).
+
+calc SE
 
 ```r
-val_st_bp_mean <- ggplot(eval_t3, aes(x = v_type, y = response, fill = v_type)) +
- geom_boxplot() +
-  xlab("Statement") + ylab("Response\n1 = Strongly Disagree 2 = Disagree;\n3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
-  scale_fill_viridis(discrete=TRUE, "Category\nof Value\nStatement") +
-  ggtitle("To what extent do you agree with these value statements?") +
+summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
+                      conf.interval=.95, .drop=TRUE) {
+    library(plyr)
+
+    # New version of length which can handle NA's: if na.rm==T, don't count them
+    length2 <- function (x, na.rm=FALSE) {
+        if (na.rm) sum(!is.na(x))
+        else       length(x)
+    }
+
+    # This does the summary. For each group's data frame, return a vector with
+    # N, mean, and sd
+    datac <- ddply(data, groupvars, .drop=.drop,
+      .fun = function(xx, col) {
+        c(N    = length2(xx[[col]], na.rm=na.rm),
+          mean = mean   (xx[[col]], na.rm=na.rm),
+          sd   = sd     (xx[[col]], na.rm=na.rm)
+        )
+      },
+      measurevar
+    )
+
+    # Rename the "mean" column    
+    datac <- rename(datac, c("mean" = measurevar))
+
+    datac$se <- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
+
+    # Confidence interval multiplier for standard error
+    # Calculate t-statistic for confidence interval: 
+    # e.g., if conf.interval is .95, use .975 (above/below), and use df=N-1
+    ciMult <- qt(conf.interval/2 + .5, datac$N-1)
+    datac$ci <- datac$se * ciMult
+
+    return(datac)
+}
+```
+
+use SE function with my data
+
+
+```r
+r_se <- summarySE(eval_t3, measurevar="response", groupvars=c("sub_pop", "val_state", "v_type"))
+
+# Standard error of the mean
+whisk_se <- ggplot(r_se, aes(x = val_state, y=response, colour=sub_pop)) + 
+  geom_errorbar(aes(ymin = response - se, ymax = response + se), width=.4) +
+  scale_fill_viridis(discrete=TRUE) + 
+  scale_color_viridis(discrete=TRUE, "") +
   coord_cartesian(ylim = c(1, 5)) +
+    ylab("Response\n1 = Strongly Disagree 2 = Disagree; 3 = Neither Agree nor Disagree;\n4 = Agree; 5 = Strongly Agree") +
+  xlab("") +
+  geom_point() +
   stat_summary(fun.y=mean, colour="orangered", geom="point", 
-               shape=10, size=4)  +
-  facet_grid(~ sub_pop)
+               shape=10, size=2) +
+  theme(panel.background = element_rect(fill = "gray40"))
 
-val_st_bp_mean
+whisk_se
 ```
 
-![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-16-1.png) 
-
-```r
-#ggsave(val_st_vio_mean, file="/Users/sarahklain/Documents/R_2015/navi/figs/val_st_vio_mean.jpg")
-```
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-20-1.png) 
 
 
 
@@ -461,7 +604,7 @@ val_st_bp_mean_all <- ggplot(eval_t3, aes(x = val_state, y = response, fill = v_
 val_st_bp_mean_all
 ```
 
-![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-17-1.png) 
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-21-1.png) 
 
 
 
@@ -491,7 +634,7 @@ bar_means <- ggplot(all_m2, aes(x = value, y = ave, fill = v_type)) +
 bar_means
 ```
 
-![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-18-1.png) 
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-22-1.png) 
 
 
 
@@ -524,7 +667,7 @@ bar_mean2 <- ggplot(na.omit(m3pt), aes(x = value, y = mean_resp, fill = type1)) 
 bar_mean2
 ```
 
-![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-19-1.png) 
+![](MT_T_F_value_statements_files/figure-html/unnamed-chunk-23-1.png) 
 
 calc means for sub pops, relational values
 

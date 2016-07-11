@@ -29,9 +29,11 @@ library(ggplot2) # for great charts
 ```
 
 Input data
+
+In cer_2016_01_08_dem4.csv I recoded const_st by removing the 5s, which removes the "not sure" responses
 ```{r}
 setwd("/Users/sarahklain/Documents/R_2015/navi") #set working directory
-ev_wf <- read.csv("cer_2016_01_08_dem3.csv")
+ev_wf <- read.csv("cer_2016_01_08_dem4.csv")
 #str(ev_wf)
 
 ```
@@ -65,6 +67,26 @@ cg_yb
 ```{r}
 library(corrplot)
 ev_wf2 <-na.omit(ev_wf)
-corrplot(cor(as.matrix(ev_wf2[1:36])), order = "hclust", tl.col='black', tl.cex=.75, na.label.col = "black") 
+cp1 <- corrplot(cor(as.matrix(ev_wf2[1:36])), order = "hclust", tl.col='black', tl.cex=.75, na.label.col = "black") 
+
+cp1
+
+cp2 <- corrplot(cor(as.matrix(ev_wf2[1:41])), order = "hclust", tl.col='black', tl.cex=.75, na.label.col = "black") 
+
+cp2
+
+corr <- cor((as.matrix(ev_wf2[12:25])))
+corrplot(corr, method = "number", tl.cex = 1, tl.col='black')
 ```
+
+get p values for smaller subset of variables
+```{r}
+library(psych)
+corr.test(ev_wf[11:15], ev_wf[11:15])
+corr.test(ev_wf[11:15], ev_wf[38:41])
+corr.test(ev_wf[11:15], ev_wf[16:41])
+```
+
+oper negatively correlates with other_rel, 
+const_st neg corr with clean instr
 

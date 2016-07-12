@@ -15,15 +15,8 @@ Setup
 
 ```{r}
 library(Hmisc) #to run correlations with sig levels
-library(ggthemes) # for pretty themes in ggplot
-library(viridis) # for pretty colors
-library(dplyr)
-library(knitr) # tool for making nice tables
-library(tidyr) # data table wrangling tool
-library(broom)
-library(stargazer) # makes pretty tables
 library(corrgram)
-library(ggplot2) # for great charts
+library(corrplot) # for great charts
 # library(stats) # for PCA
 # library(psych)
 ```
@@ -44,29 +37,18 @@ ev_wf <- read.csv("cer_2016_01_08_dem4.csv")
 corr1 <- rcorr(as.matrix(ev_wf[11:37]), type = "pearson")
 corr1
 
-# corr2 <- rcorr(as.matrix(ev_wf[11:37]), type = "spearman")
-# corr2
+ev_sn <- read.csv("cer_snip.csv")
+ 
+corr2 <- rcorr(as.matrix(ev_sn), type = "pearson")
+corr2
+
+ev_wf2 <-na.omit(ev_wf)
 ```
 
 Make it visual
 
-```{r}
-
-corrgram(ev_wf[1:36], order=TRUE, lower.panel=panel.shade, 
-   upper.panel=panel.pie, text.panel=panel.txt, main="Environmental Values & Wind Farm (PC2/PC1 Order)")
-
-#fun colors
-cg_yb <- corrgram(ev_wf[11:36], order=TRUE, lower.panel=panel.shade, 
-   upper.panel=panel.pie, text.panel=panel.txt, col.regions = colorRampPalette(c("purple4", "skyblue1", "khaki1", "gold1")), main="Environmental Values & Wind Farm (PC2/PC1 Order)")
-
-cg_yb
-#ggsave(cg_yb, file = "/Users/sarahklain/Documents/R_2015/navi/corr_figs/cg_y_b.pdf")
-#pdf(file = "/Users/sarahklain/Documents/R_2015/navi/corr_figs/cg_y_b.pdf")
-```
-
-```{r}
+#```{r}
 library(corrplot)
-ev_wf2 <-na.omit(ev_wf)
 cp1 <- corrplot(cor(as.matrix(ev_wf2[1:36])), order = "hclust", tl.col='black', tl.cex=.75, na.label.col = "black") 
 
 cp1
@@ -74,9 +56,15 @@ cp1
 cp2 <- corrplot(cor(as.matrix(ev_wf2[1:41])), order = "hclust", tl.col='black', tl.cex=.75, na.label.col = "black") 
 
 cp2
+#visual with numbers
+cp_num <- corrplot(corr, method = "number", tl.cex = 1, tl.col='black')
+cp_num
+```{r}
+#snippet of dataset
+ev_sn2 <- na.omit(ev_sn)
+cp_sn <- corrplot(cor(as.matrix(ev_sn2)), order = "hclust", tl.col='black', tl.cex=.75, na.label.col = "black", insig = "pch") 
 
-corr <- cor((as.matrix(ev_wf2[12:25])))
-corrplot(corr, method = "number", tl.cex = 1, tl.col='black')
+cp_sn
 ```
 
 get p values for smaller subset of variables
@@ -89,4 +77,79 @@ corr.test(ev_wf[11:15], ev_wf[16:41])
 
 oper negatively correlates with other_rel, 
 const_st neg corr with clean instr
+
+correlation table with only wind farm attitude questions
+
+```{r}
+library(Hmisc)
+
+flattenCorrMatrix <- function(cormat, pmat) {
+  ut <- upper.tri(cormat)
+  data.frame(
+    row = rownames(cormat)[row(cormat)[ut]],
+    column = rownames(cormat)[col(cormat)[ut]],
+    cor  =(cormat)[ut],
+    p = pmat[ut]
+    )
+}
+
+res <- rcorr(as.matrix(ev_sn2))
+fcm <- flattenCorrMatrix(res$r, res$P)
+fcm
+
+#smaller dataset
+ev_sn_1 <- read.csv("cer_snip2.csv")
+ev_sn_2 <- na.omit(ev_sn_1)
+ev_sn_2$att_w_US <- NULL
+ev_sn_2$wf_rec <- NULL
+
+res2 <- rcorr(as.matrix(ev_sn_2))
+fcm2 <- flattenCorrMatrix(res2$r, res$P)
+fcm2
+```
+
+Better visual with significance
+```{r}
+panel.shadeNtext <- function (x, y, corr = NULL, col.regions, ...) 
+{
+  corr <- cor(x, y, use = "pair")
+  results <- cor.test(x, y, alternative = "two.sided")
+  est <- results$p.value
+  stars <- ifelse(est < 5e-4, "***", 
+                  ifelse(est < 5e-3, "**", 
+                         ifelse(est < 5e-2, "*", "")))
+  ncol <- 14
+  pal <- col.regions(ncol)
+  col.ind <- as.numeric(cut(corr, breaks = seq(from = -1, to = 1, 
+                                               length = ncol + 1), include.lowest = TRUE))
+  usr <- par("usr")
+  rect(usr[1], usr[3], usr[2], usr[4], col = pal[col.ind], 
+       border = NA)
+  box(col = "lightgray")
+  on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- formatC(corr, digits = 2, format = "f")
+  cex.cor <- .8/strwidth("-X.xx")
+  fonts <- ifelse(stars != "", 2,1)
+  # option 1: stars:
+  text(0.5, 0.4, paste0(r,"\n", stars), cex = cex.cor)
+  # option 2: bolding:
+  #text(0.5, 0.5, r, cex = cex.cor, font=fonts)
+}
+
+# Generate some sample data
+#sample.data <- matrix(rnorm(100), ncol=10)
+#sample.data <- matrix(ev_sn_2, ncol = 10)
+sample.data <- as.matrix(ev_sn_2, ncol = 8)
+
+# Call the corrgram function with the new panel functions
+# NB: call on the data, not the correlation matrix
+cg <- corrgram(sample.data, type="data", lower.panel=panel.shadeNtext, 
+         upper.panel=NULL)
+
+cg
+
+```
+
+
 

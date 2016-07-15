@@ -1,7 +1,7 @@
 ---
-title: "Correlation exploration WF EV"
+title: "Corr_explore_wf_ev2"
 author: "Sarah Klain"
-date: "May 1, 2016"
+date: "July 13, 2016"
 output: 
   html_document: 
     keep_md: yes
@@ -23,35 +23,32 @@ library(corrplot) # for great charts
 
 Input data
 
-In cer_2016_01_08_dem4.csv I recoded const_st by removing the 5s, which removes the "not sure" responses
+I redid the dataset so wf_corr Likert scales reflect high environmental value with high score. In const_st I removed the "not sure" responses
 ```{r}
 setwd("/Users/sarahklain/Documents/R_2015/navi") #set working directory
-ev_wf <- read.csv("cer_2016_01_08_dem4.csv")
-#str(ev_wf)
 
+#cwf <- read.csv("wf_corr.csv")
+cwf <- read.csv("wf_corr2.csv")
+cwf2 <-na.omit(cwf)
+cwf2 <- cwf[1:11]
 ```
 
 ### Correlations
 
 ```{r}
-corr1 <- rcorr(as.matrix(ev_wf[11:37]), type = "pearson")
+corr1 <- rcorr(as.matrix(cwf[1:12]), type = "pearson")
 corr1
 
-ev_sn <- read.csv("cer_snip.csv")
- 
-corr2 <- rcorr(as.matrix(ev_sn), type = "pearson")
-corr2
-
-ev_wf2 <-na.omit(ev_wf)
+cwf2 <- cwf[1:11]
 ```
 
 Make it visual
 
+#fix later
 #```{r}
-library(corrplot)
-cp1 <- corrplot(cor(as.matrix(ev_wf2[1:36])), order = "hclust", tl.col='black', tl.cex=.75, na.label.col = "black") 
+cp <- corrplot(cor(as.matrix(cwf2[1:5])), order = "hclust", tl.col='black', tl.cex=.75, na.label.col = "black") 
 
-cp1
+cp
 
 cp2 <- corrplot(cor(as.matrix(ev_wf2[1:41])), order = "hclust", tl.col='black', tl.cex=.75, na.label.col = "black") 
 
@@ -59,13 +56,6 @@ cp2
 #visual with numbers
 cp_num <- corrplot(corr, method = "number", tl.cex = 1, tl.col='black')
 cp_num
-```{r}
-#snippet of dataset
-ev_sn2 <- na.omit(ev_sn)
-cp_sn <- corrplot(cor(as.matrix(ev_sn2)), order = "hclust", tl.col='black', tl.cex=.75, na.label.col = "black", insig = "pch") 
-
-cp_sn
-```
 
 get p values for smaller subset of variables
 ```{r}
@@ -75,42 +65,6 @@ corr.test(ev_wf[11:15], ev_wf[38:41])
 corr.test(ev_wf[11:15], ev_wf[16:41])
 ```
 
-oper negatively correlates with other_rel, 
-const_st neg corr with clean instr
-
-correlation table with only wind farm attitude questions
-
-```{r}
-library(Hmisc)
-
-flattenCorrMatrix <- function(cormat, pmat) {
-  ut <- upper.tri(cormat)
-  data.frame(
-    row = rownames(cormat)[row(cormat)[ut]],
-    column = rownames(cormat)[col(cormat)[ut]],
-    cor  =(cormat)[ut],
-    p = pmat[ut]
-    )
-}
-
-res <- rcorr(as.matrix(ev_sn2))
-fcm <- flattenCorrMatrix(res$r, res$P)
-fcm
-```
-
-```{r}
-#smaller dataset
-ev_sn_1 <- read.csv("cer_snip2.csv")
-ev_sn_2 <- na.omit(ev_sn_1)
-ev_sn_2$wf_rec <- NULL
-ev_sn_2$oper <- NULL
-```
-
-```{r}
-res2 <- rcorr(as.matrix(ev_sn_2))
-fcm2 <- flattenCorrMatrix(res2$r, res$P)
-fcm2
-```
 
 Better visual with significance
 ```{r}
@@ -144,7 +98,7 @@ panel.shadeNtext <- function (x, y, corr = NULL, col.regions, ...)
 # Generate some sample data
 #sample.data <- matrix(rnorm(100), ncol=10)
 #sample.data <- matrix(ev_sn_2, ncol = 10)
-sample.data <- as.matrix(ev_sn_2, ncol = 8)
+sample.data <- as.matrix(cwf2, ncol = 11)
 
 # Call the corrgram function with the new panel functions
 # NB: call on the data, not the correlation matrix
@@ -155,8 +109,29 @@ cg
 
 ```
 
+Linear model
+
 ```{r}
-c <- read.csv("~/Documents/R_2015/wf_ce/Coded_WF_10_14_2015.csv")
+#z <- lm(y ~ x, data = cwf)
+lm_at_w_US <- lm(att_w_US ~ NEP + rel + met + moral + instr + gender + age + edu + income + employ, data = cwf)
+
+summary(lm_at_w_US)    # parameter estimates and overall model fit
+plot(lm_at_w_US)       # plots of residuals, normal quantiles, leverage
+coef(lm_at_w_US)       # model coefficients (means, slopes, intercepts)
+confint(lm_at_w_US)    # confidence intervals for parameters
+
+resid(lm_at_w_US)      # residuals
+fitted(lm_at_w_US)     # predicted values
+abline(lm_at_w_US)     # adds simple linear regression line to scatter plot
+
+lm_const_st <- lm(const_st ~ NEP + rel + met + moral + instr + gender + age + edu + income + employ, data = cwf)
+
+summary(lm_const_st)
+
+
+lm_first_st <- lm(first_st ~ NEP + rel + met + moral + instr + gender + age + edu + income + employ, data = cwf)
+
+summary(lm_first_st)
 ```
 
 
